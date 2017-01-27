@@ -4,7 +4,7 @@ Realizzazione di diverse CNN con tensorflow, libreria Keras, in ambiente Windows
 
 * Installazione ambiente di sviluppo
 * Realizzazione di un primo modello (standard keras) su dataset MNIST
-* Realizzazione di un modello basato sul [paper](http://people.idsia.ch/~ciresan/data/cvpr2012.pdf) di Dan Ciresan, Ueli Meier e Jurgen Schmidhuber
+* Realizzazione di un modello basato sul [paper](http://people.idsia.ch/~ciresan/data/cvpr2012.pdf) di Dan Ciresan, Ueli Meier e Jurgen Schmidhuber e confronto con activation function più recente.
 
 ## TO DO:
 * realizzazione di altri modelli per valutare diversi risultati
