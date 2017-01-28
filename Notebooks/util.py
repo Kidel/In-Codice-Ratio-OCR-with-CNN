@@ -1,8 +1,6 @@
 import matplotlib.pyplot as plt
-import tensorflow as tf
-import numpy as np
-from sklearn.metrics import confusion_matrix
-import math
+from keras.utils.visualize_util import plot
+import os.path
 
 class Util(object):
     
@@ -34,3 +32,8 @@ class Util(object):
         # Ensure the plot is shown correctly with multiple plots
         # in a single Notebook cell.
         plt.show()
+
+    def maybe_save_network(self, model, model_image_path='images/temp.png'):
+        if not os.path.exists(model_image_path):
+            plot(model, to_file=model_image_path)
+        return model_image_path
