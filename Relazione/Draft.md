@@ -4,7 +4,8 @@ Realizzazione di diverse CNN con tensorflow, libreria Keras, in ambiente Windows
 
 * Installazione ambiente di sviluppo
 * Realizzazione di un primo modello (standard keras) su dataset MNIST
-* Realizzazione di un modello basato sul [paper](http://people.idsia.ch/~ciresan/data/cvpr2012.pdf) di Dan Ciresan, Ueli Meier e Jurgen Schmidhuber e confronto con activation function più recente.
+* Studio del [MCDNN for image recognition](http://people.idsia.ch/~ciresan/data/cvpr2012.pdf) di Dan Ciresan, Ueli Meier e Jurgen Schmidhuber: architettura DNN, combinazione di più colonne di DNN in una multi-colonna (approccio ensemble learning), processo di training con distorsione dell'immagine ad ogni epoca, funzioni di attivazione (tanh, lineare, softmax), dataset sperimentali (MNIST, NIST SD 19, CIFAR 10, caratteri cinesi, immagini stereo di oggetti 3d).
+* Realizzazione di un modello basato sul [paper](http://people.idsia.ch/~ciresan/data/cvpr2012.pdf) e confronto con activation function più recente.
 
 ## TO DO:
 * introduzione di callback per metriche
