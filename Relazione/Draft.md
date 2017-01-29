@@ -7,6 +7,7 @@ Realizzazione di diverse CNN con tensorflow, libreria Keras, in ambiente Windows
 * Realizzazione di un modello basato sul [paper](http://people.idsia.ch/~ciresan/data/cvpr2012.pdf) di Dan Ciresan, Ueli Meier e Jurgen Schmidhuber e confronto con activation function più recente.
 
 ## TO DO:
+* introduzione di callback per metriche
 * realizzazione di altri modelli per valutare diversi risultati
 * adattamento dell'input da MNIST al dataset di In Codice Ratio
 * esperimento con Transfer Learning da Inception Model
