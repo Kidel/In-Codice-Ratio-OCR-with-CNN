@@ -104,15 +104,15 @@ class OCR_NeuralNetwork:
         X_test, y_test = self._preprocess_data(X_test, y_test)
         
         # checkpoint
-        checkpoint_relu = ModelCheckpoint(self._model_path, monitor='val_acc', verbose=verbose, save_best_only=True, mode='max')
-        callbacks_list_relu = [checkpoint_relu]
+        checkpoint = ModelCheckpoint(self._model_path, monitor='val_acc', verbose=verbose, save_best_only=True, mode='max')
+        callbacks_list = [checkpoint]
 
         # training
         print('training relu model')
-        history_relu = self._model.fit(X_train, y_train, batch_size=self._batch_size, nb_epoch=self._nb_epochs,
-                  verbose=verbose, validation_data=(X_test, y_test), callbacks=callbacks_list_relu)
+        history = self._model.fit(X_train, y_train, batch_size=self._batch_size, nb_epoch=self._nb_epochs,
+                  verbose=verbose, validation_data=(X_test, y_test), callbacks=callbacks_list)
         
-        return history_relu
+        return history
 
         
     def _preprocess_data(self, X, y):
@@ -131,7 +131,6 @@ class OCR_NeuralNetwork:
         
         return (X,y)
     
-    
     def _try_load_model_from_fs(self):
         
         # loading weights from checkpoints 
@@ -139,13 +138,13 @@ class OCR_NeuralNetwork:
             self._model.load_weights(self._model_path)
         else:
             print("Previous Model Not Found")
-    
         
     def evaluate(self, X_test, y_test, verbose = 0):
         X, y = self._preprocess_data(X_test, y_test)
         score = self._model.evaluate(X, y, verbose = verbose)
         print('Test score:', score[0])
         print('Test accuracy:', score[1])
+        return score
         
     def predict(self, X_test):
         X_test = X_test.reshape(X_test.shape[0], self._img_rows, self._img_cols, 1)
@@ -158,11 +157,11 @@ class OCR_NeuralNetwork:
 
 def main():
     ## Fast Usage
-
-    # Prepare the datas
+    
+    # Prepare the dataset
     (X_train, y_train), (X_test, y_test) = mnist.load_data()
 
-    # Initialize the Neural Network
+    # Initialization
     nn = OCR_NeuralNetwork(10, nb_epochs=1, model_path="checkpoints", batch_size=128)
 
     # Training
@@ -171,8 +170,8 @@ def main():
     # Prediciton
     predicted = nn.predict(X_test)
 
-    # Scoring
-    nn.evaluate(X_test, y_test, verbose=1)
+    # Evaluation
+    score = nn.evaluate(X_test, y_test, verbose=1)
 
 
 # Execute the module if it is main
