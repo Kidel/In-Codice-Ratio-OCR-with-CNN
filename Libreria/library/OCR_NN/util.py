@@ -40,24 +40,18 @@ class Util(object):
             plot(model, to_file=model_image_path)
         return model_image_path
     
-    def plot_history(self, history): 
+    def plot_history(self, history, metric='acc', loc='lower right'): 
         # list all data in history
-        print(history.history.keys())
+        # print(history.history.keys())
         # summarize history for accuracy
-        plt.plot(history.history['acc'])
-        plt.plot(history.history['val_acc'])
-        plt.title('model accuracy')
-        plt.ylabel('accuracy')
+        plt.plot(history.history[metric])
+        plt.plot(history.history['val_'+metric])
+        if metric == 'acc': 
+            metric = 'accuracy'
+        plt.title('model ' + metric)
+        plt.ylabel(metric)
         plt.xlabel('epoch')
-        plt.legend(['train', 'test'], loc='upper left')
-        plt.show()
-        # summarize history for loss
-        plt.plot(history.history['loss'])
-        plt.plot(history.history['val_loss'])
-        plt.title('model loss')
-        plt.ylabel('loss')
-        plt.xlabel('epoch')
-        plt.legend(['train', 'test'], loc='upper left')
+        plt.legend(['train', 'test'], loc=loc)
         plt.show()
         
     def plot_confusion_matrix(self, y_true, num_classes, cls_pred):
