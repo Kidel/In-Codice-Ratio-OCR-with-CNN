@@ -22,3 +22,20 @@ Realizzazione di diverse CNN con tensorflow, libreria Keras, in ambiente Windows
 * ~~adattamento dell'input da MNIST al dataset di In Codice Ratio~~
 * esperimento con Transfer Learning da Inception Model
 * test in ICR
+
+# Problema
+
+# Ambiente
+
+Il sistema si basa sulla libreria open-source [**TensorFlow**](https://www.tensorflow.org/), gestita ad alto livello tramite la libreria [*Keras*](https://keras.io/).
+Per ottenere migliori prestazioni, utilizziamo la versione di Tensorflow per GPU, con supporto per Cuda core (cuDNN v5.1).
+
+Gli esperimenti sono stati svolti su 3 macchine diverse, in ambiente Windows e GPU Nvidia dotate rispettivamente di 384, 1024 e 1664 Cuda core.
+
+## Il primo modello di CNN e test dell'ambiente di lavoro
+
+Il primo modello di CNN prodotto è una rete piuttosto semplice, impostata per verificare il corretto funzionamento del sistema.
+Si tratta di una rete a 2 livelli convoluzionali e 2 hidden layer. 
+
+**Immagine rete**
+
