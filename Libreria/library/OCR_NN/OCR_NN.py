@@ -144,6 +144,7 @@ class OCR_NeuralNetwork:
         score = self._model.evaluate(X, y, verbose = verbose)
         print('Test score:', score[0])
         print('Test accuracy:', score[1])
+        print('Test error:', (1-score[2])*100, '%')
         return score
         
     def predict(self, X_test):
