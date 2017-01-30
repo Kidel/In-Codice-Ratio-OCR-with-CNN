@@ -1,0 +1,4 @@
+1) init per inizializzare la rete
+2) train (con parametro per force)
+3) evaluate 
+4) classify array
