@@ -5,12 +5,14 @@ Realizzazione di diverse CNN con tensorflow, libreria Keras, in ambiente Windows
 - Installazione ambiente di sviluppo
 - Realizzazione di un primo modello (standard keras) su dataset MNIST
 - Studio del [MCDNN for image recognition](http://people.idsia.ch/~ciresan/data/cvpr2012.pdf) di Dan Ciresan, Ueli Meier e Jurgen Schmidhuber: architettura DNN, combinazione di più colonne di DNN in una multi-colonna (approccio ensemble learning), processo di training con distorsione dell'immagine ad ogni epoca, funzioni di attivazione (tanh, lineare, softmax), dataset sperimentali (MNIST, NIST SD 19, CIFAR 10, caratteri cinesi, immagini stereo di oggetti 3d).
-- Realizzazione di un modello basato sul [paper](http://people.idsia.ch/~ciresan/data/cvpr2012.pdf) e confronto con activation function più recente:
- - Funzione di attivazione **relu** è risultata migliore di tanh (0.9934 vs 0.9906 accuracy).
- - 800 epochs risultano in overfitting, un numero migliore è nell'ordine di 50.
- - Errore ancora troppo alto, intorno allo 0.50%.
+- Studio di [Regularization of Neural Networks using DropConnect](http://cs.nyu.edu/~wanli/dropc/).
+- Realizzazione di un modello basato sul [paper](http://people.idsia.ch/~ciresan/data/cvpr2012.pdf) e [DropConnect](http://cs.nyu.edu/~wanli/dropc/) e confronto con activation function più recente:
+ - Funzione di attivazione **relu** è risultata migliore di tanh (0.9934 vs 0.9906 accuracy nelle stesse condizioni e durante tutte le epoche).
+ - Confronto tra [algoritmi di ottimizzazione](http://cs.stanford.edu/people/karpathy/convnetjs/demo/trainers.html) su MNIST.
+ - 800 epoche risultano in overfitting, un numero migliore è nell'ordine di 50-650.
+ - Errore intorno allo 0.55%.
 - Terzo modello di CNN:
- - Introduzione di distorsione randomica delle immagini: rotazione in una finestra di 30°, shift verticale e orizzontale in un range del 10%.
+ - Introduzione di distorsione randomica delle immagini: rotazione in una finestra di 30°, shift verticale e orizzontale e zoom in un range del 10%.
 - Realizzazione di una o più librerie:
  - libreria OCR_NN che espone funzioni di inizializzazione, training, valutazione e classificazione.
  - libreria util per il plotting di grafici e metriche.
@@ -43,6 +45,6 @@ Si tratta di una rete a 2 livelli convoluzionali e 2 hidden layer.
 
 Il secondo modello si basa sullo studio del 2012 condotto da Dan Ciresan, Ueli Meier e Jurgen Schmidhuber ed esposto nel paper [Multi-column Deep Neural Network for image recognition](http://people.idsia.ch/~ciresan/data/cvpr2012.pdf). 
 
-A seguito di un attento studio, abbiamo sperimentato il loro approccio e riadattato alla luce delle nuove evidenze emerse nel campo delle reti neurali.
+A seguito di un attento studio, abbiamo sperimentato il loro approccio e riadattato alla luce delle nuove evidenze emerse nel campo delle reti neurali (in primo ruolo [DropConnect](http://cs.nyu.edu/~wanli/dropc/) e la funzione di attivazione Rectifier).
 
 ## Multi-column Deep Neural Network
