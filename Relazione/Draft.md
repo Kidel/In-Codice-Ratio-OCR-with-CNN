@@ -39,3 +39,10 @@ Si tratta di una rete a 2 livelli convoluzionali e 2 hidden layer.
 
 **Immagine rete**
 
+# Multi-column Deep Neural Network e il secondo modello di CNN
+
+Il secondo modello si basa sullo studio del 2012 condotto da Dan Ciresan, Ueli Meier e Jurgen Schmidhuber ed esposto nel paper [Multi-column Deep Neural Network for image recognition](http://people.idsia.ch/~ciresan/data/cvpr2012.pdf). 
+
+A seguito di un attento studio, abbiamo sperimentato il loro approccio e riadattato alla luce delle nuove evidenze emerse nel campo delle reti neurali.
+
+## Multi-column Deep Neural Network
