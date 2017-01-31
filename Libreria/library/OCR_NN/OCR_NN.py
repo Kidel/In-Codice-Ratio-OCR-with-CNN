@@ -50,11 +50,11 @@ class OCR_NeuralNetwork:
     # Model first loaded
     _loaded = False
     
-    def __init__(self, nb_classes, nb_epochs=50, model_path = "checkpoints/temp.hdf5", batch_size=128, activation="relu"):
+    def __init__(self, nb_classes, nb_epochs=50, batch_size=128, model_dir="checkpoints", model_name="no_name", activation="relu"):
         self._batch_size = batch_size
         self._nb_classes = nb_classes
         self._nb_epochs = nb_epochs
-        self._model_path = os.path.join(model_path, 'temp.hdf5') 
+        self._model_path = os.path.join(model_dir, model_name + '.hdf5') 
         self._activation = activation
          
     def _init_model(self):
@@ -97,7 +97,7 @@ class OCR_NeuralNetwork:
             self._init_model()
             self._try_load_model_from_fs()
 
-            _loaded = True
+            self._loaded = True
 
 
         X_train,y_train = self._preprocess_data(X_train, y_train)
@@ -108,7 +108,7 @@ class OCR_NeuralNetwork:
         callbacks_list = [checkpoint]
 
         # training
-        print('training relu model')
+        print('Training model')
         history = self._model.fit(X_train, y_train, batch_size=self._batch_size, nb_epoch=self._nb_epochs,
                   verbose=verbose, validation_data=(X_test, y_test), callbacks=callbacks_list)
         
@@ -163,7 +163,7 @@ def main():
     (X_train, y_train), (X_test, y_test) = mnist.load_data()
 
     # Initialization
-    nn = OCR_NeuralNetwork(10, nb_epochs=1, model_path="checkpoints", batch_size=128)
+    nn = OCR_NeuralNetwork(10, nb_epochs=1, model_dir="checkpoints", name="test", batch_size=128)
 
     # Training
     history = nn.fit(X_train, y_train, X_test, y_test, forceRetrain = False)
