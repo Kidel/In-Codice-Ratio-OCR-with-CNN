@@ -12,9 +12,9 @@ Realizzazione di diverse CNN con tensorflow, libreria Keras, in ambiente Windows
  - 800 epoche risultano in overfitting, un numero migliore è nell'ordine di 50-650.
  - Errore intorno allo 0.55%.
 - Terzo modello di CNN:
- - Introduzione di distorsione randomica delle immagini: rotazione in una finestra di 30°, shift verticale e orizzontale e zoom in un range del 10%.
+ - Introduzione di distorsione randomica delle immagini: rotazione in una finestra di 30°, shift verticale e orizzontale e zoom in un range del 10%. Sono state testate finestre maggiori e minori di 30° e presenza o assenza di shift e zoom. E' stata testata la presenza o meno di epoche con dataset pulito. 25 epoche alla fine del precedente training sono risultate positive per la precision senza portare a overfitting.
 - Realizzazione di una o più librerie:
- - libreria OCR_NN che espone funzioni di inizializzazione, training, valutazione e classificazione.
+ - libreria ```OCR_NN``` che espone funzioni di inizializzazione, training, valutazione e classificazione.
  - libreria util per il plotting di grafici e metriche.
 
 ## TO DO:
