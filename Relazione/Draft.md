@@ -91,7 +91,7 @@ La seconda riguarda la funzione di attivazione. Nel modello multicolonna viene u
 
 Il secondo modello di CNN è dunque il seguente:
 
-**immagine**
+![Secondo modello CNN](images/neural-network-icr.png)
 
 ## Valutazione su dataset MNIST
 
