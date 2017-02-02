@@ -88,3 +88,4 @@ ENV/
 # Rope project settings
 .ropeproject
 Notebooks/distorted_data/
+Notebooks/not_code/
