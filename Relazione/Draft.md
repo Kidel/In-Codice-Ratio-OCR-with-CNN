@@ -122,3 +122,5 @@ Ciò nonostante, il *tasso d'errore* scende considerevolemente da 0.55 a **0.45*
 L'aumento della dimensione dell'hidden layer ha portato un lieve miglioramento del tasso d'errore, raggiungendo lo **0.44**.
 
 Si tratta di un buono risultato, molto vicino a quanto ottenuto dalla DNN semplice del paper.
+
+** confronto tra secondo e terzo modello **
