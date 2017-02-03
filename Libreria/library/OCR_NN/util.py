@@ -13,7 +13,7 @@ class Util(object):
 
         plt.show()
     
-    def plot_images(self, images, cls_true, cls_pred=None, img_size=28, img_shape=(28,28), interpolation='none'):
+    def plot_images(self, images, cls_true, cls_pred=None, img_shape=(28,28), interpolation='none'):
         assert len(images) == len(cls_true) == 9
         # Create figure with 3x3 sub-plots.
         fig, axes = plt.subplots(3, 3)
