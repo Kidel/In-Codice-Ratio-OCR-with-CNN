@@ -27,15 +27,15 @@ Realizzazione di diverse CNN con tensorflow, libreria Keras, in ambiente Windows
 * esperimento con Transfer Learning da Inception Model
 * test in ICR
 
-# Problema
+# Il problema
 
-In Codice Ratio è un progetto curato dall'Università degli Studi di Roma Tre in collaborazione con l'Archivio Segreto dello Stato del Vaticano. Tale progetto ha lo scopo di digitalizzare i documenti e i testi antichi contenuti nell'Archivio.
+**In Codice Ratio** è un progetto curato dall'*Università degli Studi di Roma Tre* in collaborazione con l'*Archivio Segreto dello Stato del Vaticano*. Tale progetto ha lo scopo di digitalizzare i documenti e i testi antichi contenuti nell'Archivio.
 
 Il problema che abbiamo affrontato è dunque quello di classificare le lettere scritte a mano (in scrittura carolina) a partire dalla loro immagine opportunamente estratta, al fine di riconoscerle.
 
 Per affrontare tale problema abbiamo scelto di utilizzare il Deep Learning, costruendo più Convolutional Neural Network, studiando le migliori architetture allo stato dell'arte e riadattandole per questo contesto.
 
-# Ambiente
+# L'ambiente
 
 Il sistema si basa sulla libreria open-source [**TensorFlow**](https://www.tensorflow.org/), gestita ad alto livello tramite la libreria [*Keras*](https://keras.io/).
 Per ottenere migliori prestazioni, utilizziamo la versione di Tensorflow per GPU, con supporto per Cuda core (cuDNN v5.1).
@@ -142,6 +142,3 @@ I tempi di addestramento sono proporzionali al numero di reti che costituiscono 
 Il *tasso d'errore* è migliorato, raggiungengo lo **0.4**. Si tratta del miglior risultato ottenuto, e ci conferma quanto espresso dal paper, ovvero che la tecnica dell'ensemble learning offre effetivamente prestazioni migliori. Notiamo inoltre che abbiamo ottenuto un risultato migliore rispetto alla 5 MCDNN del paper, che lavorando sulle immagini in dimensione originale come nel nostro caso, ottiene un tasso d'errore dello **0.46**.
 
 Aggiungendo un numero adeguato di colonne e con le opportune trasformazioni del dataset sembra quindi essere possibile raggiungere i risultati pubblicati dal paper, ovvero quello 0.23 che tanto si avvicina all'errore umano dello 0.2.
-
-
-
