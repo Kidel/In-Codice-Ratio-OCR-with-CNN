@@ -49,8 +49,6 @@ Windows è stato preferito ad un sistema Unix per la miglior gestione del carico
 Il primo modello di CNN prodotto è una rete piuttosto semplice, impostata per verificare il corretto funzionamento del sistema.
 Si tratta di una rete a 2 livelli convoluzionali e 2 hidden layer. 
 
-**Immagine rete**
-
 # Multi-column Deep Neural Network
 
 I modelli successivi si basano principalmente sullo studio del 2012 condotto da Dan Ciresan, Ueli Meier e Jurgen Schmidhuber ed esposto nel paper [Multi-column Deep Neural Network for image recognition](http://people.idsia.ch/~ciresan/data/cvpr2012.pdf). 
@@ -61,11 +59,11 @@ A seguito di un attento studio, abbiamo sperimentato il loro approccio e riadatt
 
 Il modello è costituito da diverse *colonne* di Deep Neural Network, tutte con la stessa struttura, le cui predizioni vengono successivamente combinate in una semplice media aritmetica (approccio **ensemble learning**).
 
-**Immagine multi-colonna**
+<img src="images/MCDNN.png" alt="MCDNN" width="450"/>
 
 La singola DNN ha la seguente struttura: 
 
-**Immagine rete**
+![Simple DNN](images/simpleDNN.png)
 
 Il training parte da pesi inizializzati randomicamente, e la tecnica del max pooling permette di determinare facilmente i neuroni più attivi per ogni regione di input. I neuroni così "selezionati" proseguono nell'allenamento, mentre gli altri non subiscono ulteriori correzioni nei pesi.
 
