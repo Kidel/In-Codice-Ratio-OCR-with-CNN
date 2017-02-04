@@ -119,8 +119,25 @@ La divisione dell'addestramento in due fasi, tra immagini distorte e immagini or
 L'addestramento richiede chiaramente tempi più lunghi con questa architettura: notiamo infatti una dilatazione dei tempi per ogni epoca, passando da 6 secondi a 20 sulla nostra GPU media (GTX970). Il tempo totale per completare il training è stato di *3 ore*.
 Ciò nonostante, il *tasso d'errore* scende considerevolemente da 0.55 a **0.45**, a parità di numero di epoche.
 
-L'aumento della dimensione dell'hidden layer ha portato un lieve miglioramento del tasso d'errore, raggiungendo lo **0.44**.
+L'aumento della dimensione dell'hidden layer inoltre ha portato un lieve miglioramento del tasso d'errore, raggiungendo lo **0.44**.
 
 Si tratta di un buono risultato, molto vicino a quanto ottenuto dalla DNN semplice del paper.
 
-** confronto tra secondo e terzo modello **
+Resta comunque aperta la questione della convenienza, ovvero se valga la pena di attendere un addestramento di 3 ore, rispetto ai 4 minuti della rete precedente, per ottenere un incremento di precision dello 0.10%.
+
+## Il quarto modello multi colonna
+
+In questo modello si applica la tecnica dell'**ensemble learning**, così da avvicinarsi all'architettura completa esposta nel paper.
+
+Per semplicità, abbiamo costruito una rete di 5 colonne anche se, come già spiegato, nel paper viene costruita una rete più complessa, con 7 reti da 5 colonne, addestrate su diverse alterazioni del dataset. Il fine dell'esperimento è comunque quello di capire se  possiamo trarre un effettivo vantaggio dall'ensemble learning, per cui va bene utilizzare una rete più piccola ma che ci permette di comprimere i tempi di addestramento.
+
+### Valutazione
+
+I tempi di addestramento sono proporzionali al numero di reti che costituiscono la multi colonna, non avendo la possibilità di parallelizzare il processo sul nostro attuale hardware. Il tempo impiegato è stato dunque di 12 ore.
+
+Il *tasso d'errore* è migliorato, raggiungengo lo **0.4**. Si tratta del miglior risultato ottenuto, e ci conferma quanto espresso dal paper, ovvero che la tecnica dell'ensemble learning offre effetivamente prestazioni migliori. Notiamo inoltre che abbiamo ottenuto un risultato migliore rispetto alla 5 MCDNN del paper, che lavorando sulle immagini in dimensione originale come nel nostro caso, ottiene un tasso d'errore dello **0.46**.
+
+Aggiungendo un numero adeguato di colonne e con le opportune trasformazioni del dataset sembra quindi essere possibile raggiungere i risultati pubblicati dal paper, ovvero quello 0.23 che tanto si avvicina all'errore umano dello 0.2.
+
+
+
