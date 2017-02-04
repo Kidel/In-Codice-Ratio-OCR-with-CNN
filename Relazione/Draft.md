@@ -29,7 +29,11 @@ Realizzazione di diverse CNN con tensorflow, libreria Keras, in ambiente Windows
 
 # Problema
 
-**TODO**
+In Codice Ratio è un progetto curato dall'Università degli Studi di Roma Tre in collaborazione con l'Archivio Segreto dello Stato del Vaticano. Tale progetto ha lo scopo di digitalizzare i documenti e i testi antichi contenuti nell'Archivio.
+
+Il problema che abbiamo affrontato è dunque quello di classificare le lettere scritte a mano (in scrittura carolina) a partire dalla loro immagine opportunamente estratta, al fine di riconoscerle.
+
+Per affrontare tale problema abbiamo scelto di utilizzare il Deep Learning, costruendo più Convolutional Neural Network, studiando le migliori architetture allo stato dell'arte e riadattandole per questo contesto.
 
 # Ambiente
 
