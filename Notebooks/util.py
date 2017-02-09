@@ -14,7 +14,9 @@ class Util(object):
         plt.show()
     
     def plot_images(self, images, cls_true, cls_pred=None, img_shape=(28,28), interpolation='none'):
-        assert len(images) == len(cls_true) == 9
+        if not (len(images) == len(cls_true) == 9):
+            print("\nI cannot plot the graph because there less than 9 points or because the dimension of images and cls_true mismatch")
+            return
         # Create figure with 3x3 sub-plots.
         fig, axes = plt.subplots(3, 3)
         fig.subplots_adjust(hspace=0.3, wspace=0.3)
