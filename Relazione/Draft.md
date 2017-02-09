@@ -137,6 +137,6 @@ Per semplicità, abbiamo costruito una rete di 5 colonne anche se, come già spi
 
 I tempi di addestramento sono proporzionali al numero di reti che costituiscono la multi colonna, non avendo la possibilità di parallelizzare il processo sul nostro attuale hardware. Il tempo impiegato è stato dunque di 12 ore.
 
-Il *tasso d'errore* è migliorato, raggiungengo lo **0.4**. Si tratta del miglior risultato ottenuto, e ci conferma quanto espresso dal paper, ovvero che la tecnica dell'ensemble learning offre effetivamente prestazioni migliori. Notiamo inoltre che abbiamo ottenuto un risultato migliore rispetto alla 5 MCDNN del paper, che lavorando sulle immagini in dimensione originale come nel nostro caso, ottiene un tasso d'errore dello **0.46**.
+Il *tasso d'errore* è migliorato, raggiungendo lo **0.4**. Si tratta del miglior risultato ottenuto, e ci conferma quanto espresso dal paper, ovvero che la tecnica dell'ensemble learning offre effetivamente prestazioni migliori. Notiamo inoltre che abbiamo ottenuto un risultato analogo rispetto alla 5 MCDNN del paper che lavorando sulle immagini in dimensione originale, la quale ottiene un tasso d'errore identico.
 
-Aggiungendo un numero adeguato di colonne e con le opportune trasformazioni del dataset sembra quindi essere possibile raggiungere i risultati pubblicati dal paper, ovvero quello 0.23 che tanto si avvicina all'errore umano dello 0.2.
+Aggiungendo un numero adeguato di colonne e con le opportune trasformazioni del dataset sembra quindi essere possibile raggiungere i risultati pubblicati dal paper, ovvero quello 0.23% che tanto si avvicina all'errore umano dello 0.2%.
