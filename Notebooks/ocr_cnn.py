@@ -111,7 +111,7 @@ class OCR_NeuralNetwork:
             if os.path.exists(self._model_path):
                 os.remove(self._model_path)
             else:
-                print("Older Nerual Net could not be found, creating a new net...")
+                print("Older Neural Net could not be found, creating a new net...")
 
             self._init_model()
         # If it is not loaded yet, try load it from fs and create a new model
