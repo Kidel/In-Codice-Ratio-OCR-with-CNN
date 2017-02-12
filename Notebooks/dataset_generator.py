@@ -181,3 +181,39 @@ def generate_all_chars_with_class(chars = ALPHABET_ALL,
         plt.show()
 
     return (train_imgs, train_class, test_imgs, test_class, chars)
+
+def generate_all_chars_with_same_class(chars = ALPHABET_ALL, classification=0;
+                                       train_test_ratio=train_test_ratio, plot=False, verbose=1):
+    
+    sizes = np.zeros(len(chars))
+    
+    classifications = range(len(chars)) # this way chars[classification] = "a" if classification == 0
+    
+    (train_imgs, train_class, test_imgs, test_class) = generate_all_for_char_with_class(chars[0],\
+                                                                                        classification, \
+                                                                                        verbose=verbose)
+    sizes[0] = train_imgs.shape[0] + test_imgs.shape[0];
+    
+    for i in classifications:
+        if (i>0):
+            (train_imgs_prov, train_class_prov, test_imgs_prov, test_class_prov) = \
+                                                            generate_all_for_char_with_class(chars[i],\
+                                                            classification, verbose=verbose)
+                
+            sizes[i] = train_imgs_prov.shape[0] + train_imgs_prov.shape[0]
+            
+            train_imgs = np.append(train_imgs, train_imgs_prov, axis=0)
+            train_class = np.append(train_class, train_class_prov, axis=0)
+            test_imgs = np.append(test_imgs, test_imgs_prov, axis=0)
+            test_class = np.append(test_class, test_class_prov, axis=0)
+            
+    chars = np.asarray(chars)
+            
+    if plot:
+        plt.plot(sizes, 'ro')
+        plt.xticks(classifications, chars, rotation='vertical')
+        plt.margins(0.1)
+        plt.subplots_adjust(bottom=0.15)
+        plt.show()
+
+    return (train_imgs, train_class, test_imgs, test_class, chars)
