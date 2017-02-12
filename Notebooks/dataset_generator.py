@@ -182,7 +182,7 @@ def generate_all_chars_with_class(chars = ALPHABET_ALL,
 
     return (train_imgs, train_class, test_imgs, test_class, chars)
 
-def generate_all_chars_with_same_class(chars = ALPHABET_ALL, classification=0;
+def generate_all_chars_with_same_class(chars = ALPHABET_ALL, classification=0,
                                        train_test_ratio=train_test_ratio, plot=False, verbose=1):
     
     sizes = np.zeros(len(chars))
