@@ -1,5 +1,6 @@
 import samples_repository
 import numpy as np
+import matplotlib.pyplot as plt
 
 ALPHABET_LOW = ["g","p","q","s_bassa"]
 ALPHABET_HIGH = ["d_alta","s_alta","b","f","h","l"]
@@ -115,3 +116,104 @@ def generate_half_labeled_half_height(char, char_type,
 
     return (train_imgs, train_labels, test_imgs, test_labels)
 
+def generate_all_for_char_with_class(char, classification,
+                                     train_test_ratio=train_test_ratio, verbose=1):
+
+    # Calcolo i samples e le labels positivi per il training e il test
+    positive_samples = samples_repository.get_all_positive_samples_by_char(char)
+    positive_samples_train, positive_samples_test = split_by_ratio(positive_samples, train_test_ratio)
+    positive_samples_train_labels = np.empty(positive_samples_train.shape[0], dtype='uint8')
+    positive_samples_train_labels.fill(classification)
+    positive_samples_test_labels = np.empty(positive_samples_test.shape[0], dtype='uint8')
+    positive_samples_test_labels.fill(classification)
+
+    if(verbose == 1):
+        print ("Trovati", positive_samples.shape[0], "esempi positivi per il carattere", char.upper(), ".")
+        print ("Campioni di training:", positive_samples_train.shape[0], "\tCampioni di test:", positive_samples_test.shape[0])
+
+    train_imgs = positive_samples_train
+    train_labels = positive_samples_train_labels # not actually labels, it's the class
+
+    if(verbose == 1):
+        print ("Numero totale di campioni di training:", train_imgs.shape[0])
+
+    test_imgs = positive_samples_test
+    test_labels = positive_samples_test_labels
+
+    if(verbose == 1):
+        print ("Numero totale di campioni di test:", test_imgs.shape[0])
+
+    return (train_imgs, train_labels, test_imgs, test_labels)
+
+
+def generate_all_chars_with_class(chars = ALPHABET_ALL,
+                                  train_test_ratio=train_test_ratio, plot=False, verbose=1):
+    
+    sizes = np.zeros(len(chars))
+    
+    classifications = range(len(chars)) # this way chars[classification] = "a" if classification == 0
+    
+    (train_imgs, train_class, test_imgs, test_class) = generate_all_for_char_with_class(chars[0],\
+                                                                                        classifications[0], \
+                                                                                        verbose=verbose)
+    sizes[0] = train_imgs.shape[0] + test_imgs.shape[0];
+    
+    for i in classifications:
+        if (i>0):
+            (train_imgs_prov, train_class_prov, test_imgs_prov, test_class_prov) = \
+                                                            generate_all_for_char_with_class(chars[i],\
+                                                            classifications[i], verbose=verbose)
+                
+            sizes[i] = train_imgs_prov.shape[0] + train_imgs_prov.shape[0]
+            
+            train_imgs = np.append(train_imgs, train_imgs_prov, axis=0)
+            train_class = np.append(train_class, train_class_prov, axis=0)
+            test_imgs = np.append(test_imgs, test_imgs_prov, axis=0)
+            test_class = np.append(test_class, test_class_prov, axis=0)
+            
+    chars = np.asarray(chars)
+            
+    if plot:
+        plt.plot(sizes, 'ro')
+        plt.xticks(classifications, chars, rotation='vertical')
+        plt.margins(0.1)
+        plt.subplots_adjust(bottom=0.15)
+        plt.show()
+
+    return (train_imgs, train_class, test_imgs, test_class, chars)
+
+def generate_all_chars_with_same_class(chars = ALPHABET_ALL, classification=0,
+                                       train_test_ratio=train_test_ratio, plot=False, verbose=1):
+    
+    sizes = np.zeros(len(chars))
+    
+    classifications = range(len(chars)) # this way chars[classification] = "a" if classification == 0
+    
+    (train_imgs, train_class, test_imgs, test_class) = generate_all_for_char_with_class(chars[0],\
+                                                                                        classification, \
+                                                                                        verbose=verbose)
+    sizes[0] = train_imgs.shape[0] + test_imgs.shape[0];
+    
+    for i in classifications:
+        if (i>0):
+            (train_imgs_prov, train_class_prov, test_imgs_prov, test_class_prov) = \
+                                                            generate_all_for_char_with_class(chars[i],\
+                                                            classification, verbose=verbose)
+                
+            sizes[i] = train_imgs_prov.shape[0] + train_imgs_prov.shape[0]
+            
+            train_imgs = np.append(train_imgs, train_imgs_prov, axis=0)
+            train_class = np.append(train_class, train_class_prov, axis=0)
+            test_imgs = np.append(test_imgs, test_imgs_prov, axis=0)
+            test_class = np.append(test_class, test_class_prov, axis=0)
+            
+    chars = np.asarray(chars)
+            
+    if plot:
+        plt.plot(sizes, 'ro')
+        plt.xticks(classifications, chars, rotation='vertical')
+        plt.margins(0.1)
+        plt.subplots_adjust(bottom=0.15)
+        plt.show()
+
+    return (train_imgs, train_class, test_imgs, test_class, chars)
