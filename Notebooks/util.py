@@ -63,22 +63,20 @@ class Util(object):
         # Get the confusion matrix using sklearn.
         cm = confusion_matrix(y_true=y_true,
                               y_pred=cls_pred)
-        # Print the confusion matrix as text.
-        if text:
-            print(cm)
         # Plot the confusion matrix as an image.
         plt.matshow(cm)
         # Make various adjustments to the plot.
         plt.colorbar()
         tick_marks = np.arange(num_classes)
-        plt.xticks(tick_marks, range(num_classes))
-        plt.yticks(tick_marks, range(num_classes))
-        plt.xlabel('Predicted')
-        plt.ylabel('True')
-        if num_classes > 10:
-            plt.margins(0.1)
-            plt.subplots_adjust(bottom=0.1, left=0.1, top=0.1)
         if with_labels:
             plt.xticks(range(num_classes), labels, rotation='vertical')
             plt.yticks(range(num_classes), labels)
+        else:
+            plt.xticks(tick_marks, range(num_classes))
+            plt.yticks(tick_marks, range(num_classes))
+        plt.xlabel('Predicted')
+        plt.ylabel('True')
         plt.show()
+        # Print the confusion matrix as text.
+        if text:
+            print(cm)
