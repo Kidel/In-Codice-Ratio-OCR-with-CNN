@@ -13,7 +13,7 @@ class Util(object):
 
         plt.show()
     
-    def plot_images(self, images, cls_true, cls_pred=None, img_shape=(28,28), interpolation='none'):
+    def plot_images(self, images, cls_true, cls_pred=None, img_shape=(28,28), interpolation='none', with_labels=False, labels=[]):
         if not (len(images) == len(cls_true) == 9):
             print("\nI cannot plot the graph because there less than 9 points or because the dimension of images and cls_true mismatch")
             return
@@ -27,7 +27,10 @@ class Util(object):
             if cls_pred is None:
                 xlabel = "Class: {0}".format(cls_true[i])
             else:
-                xlabel = "Class: {0}, Pred: {1}".format(cls_true[i], cls_pred[i])
+                if not with_labels:
+                    xlabel = "Class: {0}, Pred: {1}".format(cls_true[i], cls_pred[i])
+                else: 
+                    xlabel = "Class: {0}, Pred: {1}".format(labels[cls_true[i]], labels[cls_pred[i]])
             # Show the classes as the label on the x-axis.
             ax.set_xlabel(xlabel)
             # Remove ticks from the plot.
@@ -56,12 +59,13 @@ class Util(object):
         plt.legend(['train', 'test'], loc=loc)
         plt.show()
         
-    def plot_confusion_matrix(self, y_true, num_classes, cls_pred):
+    def plot_confusion_matrix(self, y_true, num_classes, cls_pred, with_labels=False, labels=[], text=True):
         # Get the confusion matrix using sklearn.
         cm = confusion_matrix(y_true=y_true,
                               y_pred=cls_pred)
         # Print the confusion matrix as text.
-        print(cm)
+        if text:
+            print(cm)
         # Plot the confusion matrix as an image.
         plt.matshow(cm)
         # Make various adjustments to the plot.
@@ -71,6 +75,10 @@ class Util(object):
         plt.yticks(tick_marks, range(num_classes))
         plt.xlabel('Predicted')
         plt.ylabel('True')
-        # Ensure the plot is shown correctly with multiple plots
-        # in a single Notebook cell.
+        if num_classes > 10:
+            plt.margins(0.1)
+            plt.subplots_adjust(bottom=0.1, left=0.1, top=0.1)
+        if with_labels:
+            plt.xticks(range(num_classes), labels, rotation='vertical')
+            plt.yticks(range(num_classes), labels)
         plt.show()
