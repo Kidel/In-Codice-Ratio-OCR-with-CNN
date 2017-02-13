@@ -19,7 +19,9 @@ Realizzazione di diverse CNN con tensorflow, libreria Keras, in ambiente Windows
  - libreria ```OCR_NN``` che espone funzioni di inizializzazione, training, valutazione e classificazione.
  - libreria util per il plotting di grafici e metriche.
 - Modello a 22 classi e segmentatore
- - confronto con i modelli a lettera singola. 
+ - confronto con i modelli a lettera singola (necessario merge)
+ - basso mae e alta precision
+ - utilizzare le reti binarie per segmentare o una rete segmentatrice?
 
 ## TO DO:
 * introduzione di callback per metriche
