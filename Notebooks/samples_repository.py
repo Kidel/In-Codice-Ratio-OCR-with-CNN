@@ -4,6 +4,44 @@ import os
 import random
 
 ROOT_FOLDER = 'not_code/datasets/2016-12-10'
+NEG_WIDTH_FOLDER = '/neg_width'
+TOO_WIDE = 'wide'
+TOO_NARROW = 'narrow'
+
+def parse_coords_from_path(path):
+    filename = path.split('/')[len(path.split('/'))-1].split('.')[0]
+    width, y, x = filename.split('_')
+    return (int(x), int(y))
+
+def get_positive_samples_coordinates_and_page(char, as_dict=False):
+    """
+        returns: (x, y, width, height, page) if as_dict is False
+        {'page': [(x, y, width, height)]} otherwise
+    """
+    nt = 'nt%'
+    rum = 'rum%'
+    char_match = char + '%'
+    query = """
+        SELECT image.path, image.page, image.width, image.height
+        FROM majority_voting_three_votes as mvt, image
+        WHERE mvt.transcription like %s AND
+            NOT (mvt.transcription like %s OR mvt.transcription like %s) AND
+            image.id = mvt.image_id;
+    """
+    q_result = db.execute_query(query, (char_match, nt, rum))
+    coordinates = [parse_coords_from_path(res[0])+(res[2], res[3], res[1]) for res in q_result]
+
+    if as_dict:
+        by_page = {}
+        for x, y, w, h, page in coordinates:
+            try:
+                by_page[page].append((x,y,w,h))
+            except KeyError:
+                by_page[page] = []
+                by_page[page].append((x,y,w,h))
+        coordinates = by_page
+
+    return coordinates
 
 def get_all_positive_samples_by_char(char, root_folder=ROOT_FOLDER):
     """
@@ -28,10 +66,31 @@ def get_all_positive_samples_by_char(char, root_folder=ROOT_FOLDER):
     return imgutil.open_many_samples(complete_paths)
 
 
-def get_n_negative_samples_by_width_and_char(char, samples_n, root_folder=ROOT_FOLDER):
-    path = '/segments/'+char+'/no/'
-    filenames = [path + f for f in os.listdir(root_folder+path)]
-    samples_paths = random.sample(filenames, len(filenames))[:samples_n]
+def get_n_negative_samples_by_width_and_char(char, samples_n, char_width=None, root_folder=ROOT_FOLDER):
+    path = ROOT_FOLDER + NEG_WIDTH_FOLDER + '/' + char
+    tw_path = path + '/too_wide'
+    tn_path = path + '/too_narrow'
+    samples_paths = []
+
+    if char_width == TOO_WIDE:
+        filenames = [tw_path + f for f in os.listdir(tw_path)]
+        if samples_n > len(filenames):
+            print('[WARNING]: ci sono meno campioni troppo ampi di quelli richiesti. Trovati:', len(filenames))
+        samples_paths += filenames[:samples_n]
+    elif char_width == TOO_NARROW:
+        filenames = [tn_path + f for f in os.listdir(tn_path)]
+        if samples_n > len(filenames):
+            print('[WARNING]: ci sono meno campioni troppo stretti di quelli richiesti. Trovati:', len(filenames))
+        samples_paths += filenames[:samples_n]
+    else: #fornisce entrambi gli esempi nella stessa quantità
+        tw_filenames = [tw_path + f for f in os.listdir(tw_path)]
+        tn_filenames = [tn_path + f for f in os.listdir(tn_path)]
+        if samples_n > len(tw_filenames):
+            print('[WARNING]: ci sono meno campioni troppo ampi di quelli richiesti. Trovati:', len(tw_filenames))
+        if samples_n > len(tn_filenames):
+            print('[WARNING]: ci sono meno campioni troppo stretti di quelli richiesti. Trovati:', len(tn_filenames))
+        samples_paths += tw_filenames[:samples_n] + tn_filenames[:samples_n]
+
     return imgutil.open_many_samples(samples_paths)
 
 
