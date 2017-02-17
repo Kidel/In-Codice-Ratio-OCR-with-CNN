@@ -25,7 +25,10 @@ class Util(object):
             ax.imshow(images[i].reshape(img_shape), cmap='binary', interpolation=interpolation)
             # Show true and predicted classes.
             if cls_pred is None:
-                xlabel = "Class: {0}".format(cls_true[i])
+                if not with_labels:
+                    xlabel = "Class: {0}".format(cls_true[i])
+                else: 
+                    xlabel = "Class: {0}".format(labels[cls_true[i]])
             else:
                 if not with_labels:
                     xlabel = "Class: {0}, Pred: {1}".format(cls_true[i], cls_pred[i])
