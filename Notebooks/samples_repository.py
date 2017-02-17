@@ -66,28 +66,28 @@ def get_all_positive_samples_by_char(char, root_folder=ROOT_FOLDER):
     return imgutil.open_many_samples(complete_paths)
 
 
-def get_n_negative_samples_by_width_and_char(char, samples_n, char_width=None, root_folder=ROOT_FOLDER):
+def get_n_negative_samples_by_width_and_char(char, samples_n, char_width=None, root_folder=ROOT_FOLDER, verbose = 1):
     path = ROOT_FOLDER + NEG_WIDTH_FOLDER + '/' + char
-    tw_path = path + '/too_wide'
-    tn_path = path + '/too_narrow'
+    tw_path = path + '/too_wide/'
+    tn_path = path + '/too_narrow/'
     samples_paths = []
 
     if char_width == TOO_WIDE:
         filenames = [tw_path + f for f in os.listdir(tw_path)]
-        if samples_n > len(filenames):
+        if samples_n > len(filenames) and verbose:
             print('[WARNING]: ci sono meno campioni troppo ampi di quelli richiesti. Trovati:', len(filenames))
         samples_paths += filenames[:samples_n]
     elif char_width == TOO_NARROW:
         filenames = [tn_path + f for f in os.listdir(tn_path)]
-        if samples_n > len(filenames):
+        if samples_n > len(filenames) and verbose:
             print('[WARNING]: ci sono meno campioni troppo stretti di quelli richiesti. Trovati:', len(filenames))
         samples_paths += filenames[:samples_n]
     else: #fornisce entrambi gli esempi nella stessa quantità
         tw_filenames = [tw_path + f for f in os.listdir(tw_path)]
         tn_filenames = [tn_path + f for f in os.listdir(tn_path)]
-        if samples_n > len(tw_filenames):
+        if samples_n > len(tw_filenames) and verbose:
             print('[WARNING]: ci sono meno campioni troppo ampi di quelli richiesti. Trovati:', len(tw_filenames))
-        if samples_n > len(tn_filenames):
+        if samples_n > len(tn_filenames) and verbose:
             print('[WARNING]: ci sono meno campioni troppo stretti di quelli richiesti. Trovati:', len(tn_filenames))
         samples_paths += tw_filenames[:samples_n] + tn_filenames[:samples_n]
 
