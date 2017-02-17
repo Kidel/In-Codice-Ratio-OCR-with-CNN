@@ -220,7 +220,7 @@ def generate_all_chars_with_same_class(chars = ALPHABET_ALL, classification=0,
 
 # Returns a dataset of bad cutted letters, useful for build a classificator that discriminate good cutted letters
 # from bad cutted letters
-def generate_bad_letters_of_chosen_chars(chars = ALPHABET_ALL, n_sample_for_class_width = 100, split_ratio = 0.7, verbose = 0, plot=1):
+def generate_bad_letters_of_chosen_chars(chars=ALPHABET_ALL, n_sample_for_class_width=100, split_ratio=0.7, verbose=0, plot=True):
 
     images = []
 
@@ -248,4 +248,32 @@ def generate_bad_letters_of_chosen_chars(chars = ALPHABET_ALL, n_sample_for_clas
 
     return (images[indexes[:split_value]], images[indexes[split_value:]])
 
+def generate_dataset_for_segmentator(verbose=0, plot=True, label_pos_class=1, label_neg_class=0):
+    (X_train_Pos, y_train_Pos, X_test_Pos, y_test_Pos, _) = generate_all_chars_with_same_class(verbose=verbose, plot=plot, classification=label_pos_class)
+    (X_train_Neg, X_test_Neg) = generate_bad_letters_of_chosen_chars(n_sample_for_class_width = 5000, plot=plot, verbose=verbose)
+    
+    X_train = []
+    X_train.extend(X_train_Pos)
+    X_train.extend(X_train_Neg)
 
+    X_test = []
+    X_test.extend(X_test_Pos)
+    X_test.extend(X_test_Neg)
+
+    y_train_Neg = [label_neg_class] * len(X_train_Neg)
+    y_test_Neg = [label_neg_class] * len(X_test_Neg)
+
+    y_train = []
+    y_train.extend(y_train_Pos)
+    y_train.extend(y_train_Neg)
+
+    y_test = []
+    y_test.extend(y_test_Pos)
+    y_test.extend(y_test_Neg)
+
+    X_train = np.array(X_train)
+    X_test = np.array(X_test)
+    y_train = np.array(y_train)
+    y_test = np.array(y_test)
+    
+    return (X_train, y_train, X_test, y_test)

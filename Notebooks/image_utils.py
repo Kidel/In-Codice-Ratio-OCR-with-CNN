@@ -4,6 +4,16 @@ import numpy as np
 WIDTH=34
 HEIGHT=56
 
+def load_sample(filepath, return_size=False):
+    im = Image.open(filepath).convert('L')
+    (width, height) = im.size
+    greyscale_map = list(im.getdata())
+    greyscale_map = np.array(greyscale_map)
+    if return_size:
+        return (greyscale_map, width, height)
+    else:
+        return greyscale_map
+
 def open_sample(filepath):
     """
     Parameters
@@ -17,10 +27,7 @@ def open_sample(filepath):
         A list of lists which make it simple to access the greyscale value by
         im[y][x]
     """
-    im = Image.open(filepath).convert('L')
-    (width, height) = im.size
-    greyscale_map = list(im.getdata())
-    greyscale_map = np.array(greyscale_map)
+    (greyscale_map, width, height) = load_sample(filepath, True)
     greyscale_map = greyscale_map.reshape((height, width))
     return np.invert(add_white_padding(crop_white_space(greyscale_map)))
 

@@ -13,6 +13,17 @@ class Util(object):
 
         plt.show()
     
+    def plot_some_images(self, images, img_shape=(28,28), grid_x=3, grid_y=3):
+        fig, axes = plt.subplots(grid_y, grid_x)
+        fig.subplots_adjust(hspace=0.3, wspace=0.3)
+        for i, ax in enumerate(axes.flat):
+            ax.imshow(images[i].reshape(img_shape),
+                       interpolation='nearest',
+                       cmap='binary')
+            ax.set_xticks([])
+            ax.set_yticks([])
+        plt.show()
+    
     def plot_images(self, images, cls_true, cls_pred=None, img_shape=(28,28), interpolation='none', with_labels=False, labels=[]):
         if not (len(images) == len(cls_true) == 9):
             print("\nI cannot plot the graph because there less than 9 points or because the dimension of images and cls_true mismatch")
