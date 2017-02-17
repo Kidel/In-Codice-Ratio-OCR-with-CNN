@@ -18,17 +18,26 @@ Realizzazione di diverse CNN con tensorflow, libreria Keras, in ambiente Windows
 - Realizzazione di una o più librerie:
  - libreria ```OCR_NN``` che espone funzioni di inizializzazione, training, valutazione e classificazione.
  - libreria util per il plotting di grafici e metriche.
-- Modello a 22 classi e segmentatore
+ 
+### test su ICR
+- Classificatori binari per singolo carattere 
+ - test su dataset ICR
+- Modello a 22 classi
  - confronto con i modelli a lettera singola (necessario merge)
  - basso mae e alta precision
- - utilizzare le reti binarie per segmentare o una rete segmentatrice?
+ - ~~utilizzare le reti binarie per segmentare o una rete segmentatrice?~~
+- Rete segmentatrice
+- Test su pipeline
+ - Merge dei classificatori binari
+ - Segmentatrice + Modello 22 classi
+ - Classificatori binari + Modello 22 classi
 
 ## TO DO:
 * introduzione di callback per metriche
 * ~~realizzazione di altri modelli per valutare diversi risultati~~
 * ~~**valutare risultati del terzo modello di cnn**~~
 * ~~adattamento dell'input da MNIST al dataset di In Codice Ratio~~
-* esperimento con Transfer Learning da Inception Model
+* ~~esperimento con Transfer Learning da Inception Model~~
 * test in ICR
 
 # Il problema
