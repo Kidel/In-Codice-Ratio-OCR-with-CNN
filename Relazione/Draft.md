@@ -153,3 +153,24 @@ I tempi di addestramento sono proporzionali al numero di reti che costituiscono 
 Il *tasso d'errore* è migliorato, raggiungendo lo **0.4**. Si tratta del miglior risultato ottenuto, e ci conferma quanto espresso dal paper, ovvero che la tecnica dell'ensemble learning offre effetivamente prestazioni migliori. Notiamo inoltre che abbiamo ottenuto un risultato analogo rispetto alla 5 MCDNN del paper che lavorando sulle immagini in dimensione originale, la quale ottiene un tasso d'errore identico.
 
 Aggiungendo un numero adeguato di colonne e con le opportune trasformazioni del dataset sembra quindi essere possibile raggiungere i risultati pubblicati dal paper, ovvero quello 0.23% che tanto si avvicina all'errore umano dello 0.2%.
+
+# Esperimenti sul dataset di In Codice Ratio
+Per affrontare il problema proposto abbiamo costruito e sperimentato su 3 diverse architetture. Di seguito riportiamo i modelli e i risultati degli esperimenti.
+
+## Classificatori binari per singolo carattere
+L'architettura a 5 colonne è stata usata per condurre due diversi esperimenti sulla costruzione del training set, con un rapporto tra esempi positivi e negativi prima di 1:1 e poi di 1:2.
+
+Dalla **valutazione** sono risultati dei livelli d'accuracy e tassi d'errore distribuiti piuttosto uniformemente tra i diversi caratteri, quasi sempre sotto l'8% d'errore, sebbene troviamo alcune significative eccezioni.
+Lettere particolarmente difficili da distinguere sono state la **i**, la **m**, la **n**, la **u** e la **h**. Intuiamo che buona parte del problema, in generale anche per le altre lettere, sia posto nell'etichettatura del dataset, che contiene diversi errori commessi nella fase di crowdsourcing: vediamo infatti negli esempi di classificazione incorrette che molto spesso si trattava di immagini riconosciute correttamente dalla rete ma etichettate male dal dataset. Tuttavia la situazione si aggrava per lettere facilmente confondibili tra loro, che sono proprio la i, la m, la n e la u, che nella scrittura carolingia appaiono quasi come una concatenazione di i, o di corte linee verticali, distinguibili per lo più dal contesto e nel migliore dei casi dalla legatura del carattere alle lettere successive e precedenti. Per la **h** il problema è stato posto soprattutto dalla scarsità di esempi (circa 60).
+Di seguito riportiamo i tassi d'errore relativi alle lettere problematiche:
+
+Carattere | Ratio pos:neg 1:1 | Ratio pos:neg 1:2
+----------|-------------------|------------------
+   **i**  |     **17,5%**     |     **12,2%**
+     m    |        9,9%       |       13%
+     n    |       12,3%       |       11%
+   **u**  |       **16%**     |     **14%**
+   **h**  |    **22,22%**     |     **14%**
+   
+La tabella ci mostra la tendenza del tasso d'errore a migliorare per il dataset costruito raddoppiando gli esempi negativi rispetto a quelli positivi. Per i casi problematici mostrati risulta piuttosto evidente, ma è una tendenza che permea l'intero set di caratteri.
+A favore di questa tesi, abbiamo calcolato anche l'errore medio commesso da tutti i classificatori allenati sui due diversi training set: per il rapporto **1:1** abbiamo un **tasso d'errore medio** del **7,5%**, mentre per il rapporto **1:2** scendiamo al **6,8%**.
