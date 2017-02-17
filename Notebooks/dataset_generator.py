@@ -217,3 +217,35 @@ def generate_all_chars_with_same_class(chars = ALPHABET_ALL, classification=0,
         plt.show()
 
     return (train_imgs, train_class, test_imgs, test_class, chars)
+
+# Returns a dataset of bad cutted letters, useful for build a classificator that discriminate good cutted letters
+# from bad cutted letters
+def generate_bad_letters_of_chosen_chars(chars = ALPHABET_ALL, n_sample_for_class_width = 100, split_ratio = 0.7, verbose = 0, plot=1):
+
+    images = []
+
+    yAxis = []
+
+    for letter in chars:
+        datas = samples_repository.get_n_negative_samples_by_width_and_char(letter, n_sample_for_class_width, verbose = verbose)
+        yAxis.append(len(datas))
+        images.extend(datas)
+
+    images_len = len(images)
+    split_value = int(images_len*split_ratio)
+   
+    indexes = [i for i in range(images_len)]
+    np.random.shuffle(indexes)
+
+    images = np.array(images)
+
+    if plot:
+        plt.plot(yAxis, 'ro')
+        plt.xticks(np.arange(len(chars)),chars, rotation='vertical')
+        plt.margins(0.1)
+        plt.subplots_adjust(bottom=0.15)
+        plt.show()
+
+    return (images[indexes[:split_value]], images[indexes[split_value:]])
+
+
