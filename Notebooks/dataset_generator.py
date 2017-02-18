@@ -32,15 +32,16 @@ def split(array, index):
     return (first_half, second_half)
 
 
-def generate_positive_and_negative_labeled(char, pos_neg_ratio=pos_neg_ratio, train_test_ratio=train_test_ratio):
+def generate_positive_and_negative_labeled(char, pos_neg_ratio=pos_neg_ratio, train_test_ratio=train_test_ratio, verbose=1):
     # Calcolo i samples e le labels positivi per il training e il test
     positive_samples = samples_repository.get_all_positive_samples_by_char(char)
     positive_samples_train, positive_samples_test = split_by_ratio(positive_samples, train_test_ratio)
     positive_samples_train_labels = np.ones(positive_samples_train.shape[0], dtype='uint8')
     positive_samples_test_labels = np.ones(positive_samples_test.shape[0], dtype='uint8')
 
-    print ("Trovati", positive_samples.shape[0], "esempi positivi per il carattere", char.upper(), ".")
-    print ("Campioni di training:", positive_samples_train.shape[0], "\tCampioni di test:", positive_samples_test.shape[0])
+    if verbose == 1:
+        print ("Trovati", positive_samples.shape[0], "esempi positivi per il carattere", char.upper(), ".")
+        print ("Campioni di training:", positive_samples_train.shape[0], "\tCampioni di test:", positive_samples_test.shape[0])
 
     # Calolo i samples negativi e le labels per il training e per il test
     neg_samples_n = int(positive_samples.shape[0]*pos_neg_ratio)
@@ -49,19 +50,22 @@ def generate_positive_and_negative_labeled(char, pos_neg_ratio=pos_neg_ratio, tr
     negative_samples_train_labels = np.zeros(negative_samples_train.shape[0], dtype='uint8')
     negative_samples_test_labels = np.zeros(negative_samples_test.shape[0], dtype='uint8')
 
-    print ("Richiesti", neg_samples_n, "esempi negativi: trovati", negative_samples.shape[0], "generici.")
+    if verbose == 1:
+        print ("Richiesti", neg_samples_n, "esempi negativi: trovati", negative_samples.shape[0], "generici.")
 
     assert neg_samples_n == negative_samples.shape[0]
 
     train_imgs = np.append(positive_samples_train, negative_samples_train, axis=0)
     train_labels = np.append(positive_samples_train_labels, negative_samples_train_labels, axis=0)
 
-    print ("Numero totale di campioni di training:", train_imgs.shape[0])
+    if verbose == 1:
+        print ("Numero totale di campioni di training:", train_imgs.shape[0])
 
     test_imgs = np.append(positive_samples_test, negative_samples_test, axis=0)
     test_labels = np.append(positive_samples_test_labels, negative_samples_test_labels, axis=0)
 
-    print ("Numero totale di campioni di test:", test_imgs.shape[0])
+    if verbose == 1:
+        print ("Numero totale di campioni di test:", test_imgs.shape[0])
 
     return (train_imgs, train_labels, test_imgs, test_labels)
 
