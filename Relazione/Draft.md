@@ -72,11 +72,15 @@ A seguito di un attento studio, abbiamo sperimentato il loro approccio e riadatt
 
 Il modello è costituito da diverse *colonne* di Deep Neural Network, tutte con la stessa struttura, le cui predizioni vengono successivamente combinate in una semplice media aritmetica (approccio **ensemble learning**).
 
-<img src="images/MCDNN.png" alt="MCDNN" width="450"/>
+<div align="center">
+<img src="images/MCDNN.png" alt="MCDNN" width="450" />
+</div>
 
 La singola DNN ha la seguente struttura: 
 
+<div align="center">
 ![Simple DNN](images/simpleDNN.png)
+</div>
 
 Il training parte da pesi inizializzati randomicamente, e la tecnica del max pooling permette di determinare facilmente i neuroni più attivi per ogni regione di input. I neuroni così "selezionati" proseguono nell'allenamento, mentre gli altri non subiscono ulteriori correzioni nei pesi.
 
@@ -164,7 +168,7 @@ Dalla **valutazione** sono risultati dei livelli d'accuracy e tassi d'errore dis
 Lettere particolarmente difficili da distinguere sono state la **i**, la **m**, la **n**, la **u** e la **h**. Intuiamo che buona parte del problema, in generale anche per le altre lettere, sia posto nell'etichettatura del dataset, che contiene diversi errori commessi nella fase di crowdsourcing: vediamo infatti negli esempi di classificazione incorrette che molto spesso si trattava di immagini riconosciute correttamente dalla rete ma etichettate male dal dataset. Tuttavia la situazione si aggrava per lettere facilmente confondibili tra loro, che sono proprio la i, la m, la n e la u, che nella scrittura carolingia appaiono quasi come una concatenazione di i, o di corte linee verticali, distinguibili per lo più dal contesto e nel migliore dei casi dalla legatura del carattere alle lettere successive e precedenti. Per la **h** il problema è stato posto soprattutto dalla scarsità di esempi (circa 60).
 Di seguito riportiamo i tassi d'errore relativi alle lettere problematiche:
 
-<center>
+<div align="center">
 
 Carattere | Ratio pos:neg 1:1 | Ratio pos:neg 1:2
 ----------|-------------------|------------------
@@ -176,7 +180,7 @@ s_mediana |        3.3%       |        6.6%
      h    |      22,22%       |       13.8%
      f    |          5%       |        7.5%
      
-</center>
+</div>
    
 La tabella ci mostra come il tasso d'errore cambi in positivo o in negativo in base alla lettera e alla ratio del training set. Abbiamo inoltre calcolato l'errore medio commesso da tutti i classificatori allenati sui due diversi training set: per il rapporto **1:1** abbiamo un **tasso d'errore medio** del **7,5%**, mentre per il rapporto **1:2** del **7,1%**, influenzato probabilmente dal netto miglioramento dell'errore sulla h. 
 Le cause di questa altalenanza sono da ricercarsi probabilmente nell'etichettatura del dataset, che in certi casi mostra tagli errati come buoni esempi. L'ambiguità del dataset porta all'incostanza della classificazione, per cui per un migliore allenamento è necessario un dataset ripulito.
@@ -186,7 +190,7 @@ Questo modello si basa sull'architettura a 5 colonne con layer 50C-100C-250N e s
 
 La rete raggiunge il **95,1%** di **accuracy** e il **94,9%** di **recall**, con un **tasso d'errore** del **4,6%**. Ispezionando la matrice di confusione, si nota il buon comportamento della rete con poche eccezioni. I caratteri **h** e **f** vengono spesso scambiate rispettivamente con i caratteri **b** e **s alta**. Di seguito riportiamo i valori:
 
-<center>
+<div align="center">
 
 Carattere |         h         |         b
 ----------|-------------------|------------------
@@ -198,7 +202,7 @@ Carattere |         f         |       s_alta
      f    |        14         |          5 
   s_alta  |        23         |         90
   
-</center>
+</div>
 
 L'errore sembra nascere dalla carenza di buoni esempi di h e f nel dataset, per cui la rete tende a confondere queste lettere con i due caratteri che più somigliano. Non è da escludere la presenza di errori nell'etichettatura effettuata dal crowdsourcing, soprattutto per i caratteri s e f che sono molto simili.
 
