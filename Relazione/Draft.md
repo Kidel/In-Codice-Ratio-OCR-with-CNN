@@ -166,11 +166,13 @@ Di seguito riportiamo i tassi d'errore relativi alle lettere problematiche:
 
 Carattere | Ratio pos:neg 1:1 | Ratio pos:neg 1:2
 ----------|-------------------|------------------
-   **i**  |     **17,5%**     |     **12,2%**
-     m    |        9,9%       |       13%
-     n    |       12,3%       |       11%
-   **u**  |       **16%**     |     **14%**
-   **h**  |    **22,22%**     |     **14%**
+     i    |       17,5%       |       17,5% 
+     m    |        9,9%       |       10.3%
+     n    |       12,3%       |       12.9%
+     u    |         16%       |       15.8%  
+s_mediana |        3.3%       |        6.6%
+     h    |      22,22%       |       13.8%
+     f    |          5%       |        7.5%
    
-La tabella ci mostra la tendenza del tasso d'errore a migliorare per il dataset costruito raddoppiando gli esempi negativi rispetto a quelli positivi. Per i casi problematici mostrati risulta piuttosto evidente, ma è una tendenza che permea l'intero set di caratteri.
-A favore di questa tesi, abbiamo calcolato anche l'errore medio commesso da tutti i classificatori allenati sui due diversi training set: per il rapporto **1:1** abbiamo un **tasso d'errore medio** del **7,5%**, mentre per il rapporto **1:2** scendiamo al **6,8%**.
+La tabella ci mostra come il tasso d'errore cambi in positivo o in negativo in base alla lettera e alla ratio del training set. Abbiamo inoltre calcolato l'errore medio commesso da tutti i classificatori allenati sui due diversi training set: per il rapporto **1:1** abbiamo un **tasso d'errore medio** del **7,5%**, mentre per il rapporto **1:2** del **7,1%**, influenzato probabilmente dal netto miglioramento dell'errore sulla h. 
+Le cause di questa altalenanza sono da ricercarsi probabilmente nell'etichettatura del dataset, che in certi casi mostra tagli errati come buoni esempi. L'ambiguità del dataset porta all'incostanza della classificazione, per cui per un migliore allenamento è necessario un dataset ripulito.
