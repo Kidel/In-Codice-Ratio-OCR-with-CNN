@@ -227,7 +227,7 @@ In generale abbiamo notato che le pipeline 1 e 3 offrono molti falsi positivi, m
 
 Di seguito è fornita una tabella che riassume gli esiti dell'esperimento.
 
-Pipeline \ Parola | afferas (bad cuts) | afferas (good cuts) | unicu (good cuts) | unicu (bad cuts) | beneficiu (good cuts) | beneficiu (bad cuts) 
+Parola (taglio) | afferas (bad) | afferas (good) | unicu (good) | unicu (bad) | beneficiu (good) | beneficiu (bad) 
 --- | --- | --- | --- | --- | --- | ---
 Pipeline 1 | sls-s | asseras           | iuuci | unicu | siiescii | beuesiciu / beueficiu 
 Pipeline 2 | ----s | asseras / afferas | --u-- | unicu | ---ef--- | benes-c-u / benef-c-u
