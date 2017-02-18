@@ -4,6 +4,7 @@ import numpy as np
 WIDTH=34
 HEIGHT=56
 
+# Simply loads an image without invert, crop or padding
 def load_sample(filepath, return_size=False):
     im = Image.open(filepath).convert('L')
     (width, height) = im.size
