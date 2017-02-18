@@ -78,9 +78,8 @@ Il modello è costituito da diverse *colonne* di Deep Neural Network, tutte con 
 
 La singola DNN ha la seguente struttura: 
 
-<div align="center">
 ![Simple DNN](images/simpleDNN.png)
-</div>
+
 
 Il training parte da pesi inizializzati randomicamente, e la tecnica del max pooling permette di determinare facilmente i neuroni più attivi per ogni regione di input. I neuroni così "selezionati" proseguono nell'allenamento, mentre gli altri non subiscono ulteriori correzioni nei pesi.
 
@@ -168,8 +167,6 @@ Dalla **valutazione** sono risultati dei livelli d'accuracy e tassi d'errore dis
 Lettere particolarmente difficili da distinguere sono state la **i**, la **m**, la **n**, la **u** e la **h**. Intuiamo che buona parte del problema, in generale anche per le altre lettere, sia posto nell'etichettatura del dataset, che contiene diversi errori commessi nella fase di crowdsourcing: vediamo infatti negli esempi di classificazione incorrette che molto spesso si trattava di immagini riconosciute correttamente dalla rete ma etichettate male dal dataset. Tuttavia la situazione si aggrava per lettere facilmente confondibili tra loro, che sono proprio la i, la m, la n e la u, che nella scrittura carolingia appaiono quasi come una concatenazione di i, o di corte linee verticali, distinguibili per lo più dal contesto e nel migliore dei casi dalla legatura del carattere alle lettere successive e precedenti. Per la **h** il problema è stato posto soprattutto dalla scarsità di esempi (circa 60).
 Di seguito riportiamo i tassi d'errore relativi alle lettere problematiche:
 
-<div align="center">
-
 Carattere | Ratio pos:neg 1:1 | Ratio pos:neg 1:2
 ----------|-------------------|------------------
      i    |       17,5%       |       17,5% 
@@ -180,8 +177,6 @@ s_mediana |        3.3%       |        6.6%
      h    |      22,22%       |       13.8%
      f    |          5%       |        7.5%
      
-</div>
-   
 La tabella ci mostra come il tasso d'errore cambi in positivo o in negativo in base alla lettera e alla ratio del training set. Abbiamo inoltre calcolato l'errore medio commesso da tutti i classificatori allenati sui due diversi training set: per il rapporto **1:1** abbiamo un **tasso d'errore medio** del **7,5%**, mentre per il rapporto **1:2** del **7,1%**, influenzato probabilmente dal netto miglioramento dell'errore sulla h. 
 Le cause di questa altalenanza sono da ricercarsi probabilmente nell'etichettatura del dataset, che in certi casi mostra tagli errati come buoni esempi. L'ambiguità del dataset porta all'incostanza della classificazione, per cui per un migliore allenamento è necessario un dataset ripulito.
 
@@ -190,31 +185,52 @@ Questo modello si basa sull'architettura a 5 colonne con layer 50C-100C-250N e s
 
 La rete raggiunge il **95,1%** di **accuracy** e il **94,9%** di **recall**, con un **tasso d'errore** del **4,6%**. Ispezionando la matrice di confusione, si nota il buon comportamento della rete con poche eccezioni. I caratteri **h** e **f** vengono spesso scambiate rispettivamente con i caratteri **b** e **s alta**. Di seguito riportiamo i valori:
 
-<div align="center">
 
 Carattere |         h         |         b
 ----------|-------------------|------------------
      h    |         3         |         13 
      b    |         0         |         80
-
+     
 Carattere |         f         |       s_alta
 ----------|-------------------|------------------
      f    |        14         |          5 
   s_alta  |        23         |         90
-  
-</div>
 
 L'errore sembra nascere dalla carenza di buoni esempi di h e f nel dataset, per cui la rete tende a confondere queste lettere con i due caratteri che più somigliano. Non è da escludere la presenza di errori nell'etichettatura effettuata dal crowdsourcing, soprattutto per i caratteri s e f che sono molto simili.
 
 In generale ci aspettiamo che, come per i classificatori binari, una pulitura del dataset possa portare ad ancora migliori prestazioni e a risolvere questi casi particolari.
 
-## Classificatore binario dei tagli
+## Classificatore binario dei tagli (segmentatore)
 Questo classificatore è stato pensato per essere usato in serie con la rete multiclasse e ha il compito di stabilire se un dato segmento rappresenta un buon taglio o no. Il training set è stato costruito a partire da un'unificazione del dataset delle lettere tagliate bene (formando la classe "good") con un dataset aggiuntivo di tagli troppo grandi o troppo piccoli per ogni carattere (formando la classe "wrong").
 Abbiamo eseguito due esperimenti con due diverse architetture, una analoga a quella dei classificatori binari per singolo carattere (30C-50C-200N) ed una analoga a quella del classificatore multiclasse (50C-100C-250N).
 
 Il primo esperimento ha raggiunto un'accuracy del **93,4%** ed un tasso d'errore del **6,5%**. Questo risultato è stato raggiunto già dalla singola colonna del secondo esperimento, e ciò ci lascia intuire che il numero di caratteristiche da estrarre per questo task è più elevato.
-
-
-**TODO**
+**TODO aggiungere risultati ensemble**
 
 ## Pipeline
+Abbiamo infine sperimentato 3 diverse pipeline per l'individuazione delle possibili lettere all'interno della parola. Ogni pipeline prende in ingresso una possibile lettera ottenuta da un taglio della parola in un minimo locale e decide se si tratta di una lettera ed eventualmente offre una lista di possibilità.
+
+* La prima pipeline utilizza solo i 22 classificatori binari per decidere sia se il taglio è fatto bene, sia quale lettera è più probabile. Questa pipeline non permette un confronto preciso tra le probabilità delle lettere, poichè sono ottenute da dataset diversi.
+* La seconda pipeline utilizza il classificatore binario dei tagli per stabilire se il taglio ha individuato una sola lettera ed, in caso affermativo, utilizza il classificatore multiclasse per fornire una lista di possibilità. In questo caso la probabilità delle lettere è normalizzata dal softmax layer della rete neurale.
+* La terza pipeline è un approccio ibrido ed usa i 22 classificatori binari solo per decidere se il taglio è fatto bene o male (basta che vada bene ad uno solo dei classificatori) ed il classificatore multiclasse per ottenere le probabilità.
+
+Abbiamo dunque effettuato 3 esperimenti con 3 parole diverse, ogni parola tagliata sia bene che male (principalmente in minimi locali ma non sempre).
+
+** TODO aggiungere immagini di UNA parola e dei suoi tagli**
+
+Abbiamo potuto constatare che le pipeline 1 e 3 si comportano in maniera simile per i tagli errati, giudicando in modo positivo il taglio quasi sempre. Al contrario la pipeline 2 individua correttamente tagli fatti male, giudicando positivamente solo tagli plausibili (ad esempio parte di una 'u' può essere tagliata per somigliare molto ad una 'i' e viene giudicata positivamente). 
+Ad esempio per il taglio sbagliato di "afferas", la pipeline 1 offre come possibilità "sls-s", la pipeline 2 "----s", mentre la pipeline 3 "bld-s". Ancor più clamoroso con "unicu" (una parola difficile che può essere tagliata in molti modi), le pipeline 1 e 3 classificano il cattivo taglio come "iuuci", mentre la pipeline 2 lo rifiuta quasi interamente e classifica come "--u--". Analogamente per "beneficiu", dove la pipeline 2 riconosce solo le lettere effettivamente tagliate bene, mentre le altre 2 pipeline danno un falso positivo per "siiescii" e "biiefoii".
+
+Per quanto riguarda  i tagli corretti, anche in questo caso l'opzione migliore si è rivelata essere la pipeline 2, alla pari con la pipeline 3. Nel caso delle "f" di "afferas" ad esempio, la rete binaria singola per la "f" ottiene una probabilità inferiore al 50%, classificandola come un taglio cattivo, mentre è giudicato un buon taglio per la "s_alta". La pipeline 3 soffre dello stesso problema ma, dal momento che il taglio è giudicato positivamente per almeno una lettera, il classificatore multiclasse può fornire le probabilità, giudicando la "f" come "s", "l" o "f" con probabilità decrescente. Le 3 classificazioni sono dunque "asseras", "afferas" e "afferas". La pipeline 1 risulta essere la peggiore anche per i tagli giusti tuttavia, ad esempio per la parola "beneficiu" l'assenza di una distribuzione di probabilità per le lettere, che è mescolata con la probabilità di un buon taglio, fallisce nel riconoscere la "n", fornendo come classificazione "beuesiciu" or "beueficiu", mentre le altre 2 pipeline classificano più correttamente.
+
+In generale abbiamo notato che le pipeline 1 e 3 offrono molti falsi positivi, mentre la pipeline 2 è più robusta ed ha problemi solo con alcuni falsi negativi quando si tratta delle "i". Il problema è stato individuato ed attribuito ad un numero elevato di "cattivi tagli" di "m", "n" ed "u" identici ad una "i", che quindi viene classificata spesso in modo negativo. Per bilanciare la classificazione e spostare la bilancia verso i falsi positivi è necessario rimuovere lettere identiche alle "i" dai tagli "too narrow" di "m", "n" ed "u". 
+
+Di seguito è fornita una tabella che riassume gli esiti dell'esperimento.
+
+Pipeline \ Parola | afferas (bad cuts) | afferas (good cuts) | unicu (good cuts) | unicu (bad cuts) | beneficiu (good cuts) | beneficiu (bad cuts) 
+--- | --- | --- | --- | --- | --- | ---
+Pipeline 1 | sls-s | asseras           | iuuci | unicu | siiescii | beuesiciu / beueficiu 
+Pipeline 2 | ----s | asseras / afferas | --u-- | unicu | ---ef--- | benes-c-u / benef-c-u
+Pipeline 3 | bld-s | asseras / afferas | iuuci | unicu | biiefoii | benesiciu / beneficiu 
+
+La tabella mostra come la seconda pipeline sia la più efficace a riconoscere i tagli negativi e comunque ottima per i tagli positivi fatta eccezione di alcuni particolari tagli di "i", per i quali è già stata individuata la causa dell'anomalia.
