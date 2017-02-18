@@ -108,25 +108,25 @@ La prima sostanziale modifica al modello è stata quella di aggiungere due livel
 
 La seconda riguarda la funzione di attivazione. Nel modello multicolonna viene utilizzata la *tangente iperbolica*, simile alla sigmoide logistica ma in range [-1, 1] invece di [0, 1]. Il nostro esperimento è stato quello di sostituire questa funzione con la **rectifier**. I vantaggi di questa sostituzione sono diversi: la ReLU è molto semplice da calcolare (richiede solo addizioni, moltiplicazioni e confronti), permette un'attivazione sparsa dei neuroni (evita l'overfitting), e una migliore propagazione dei gradienti. Semplicemente, risulta più veloce ed efficiente della sigmoide per architetture deep e dataset complessi.
 
-Il secondo modello di CNN è dunque il seguente:
-
-![Secondo modello CNN](images/neural-network-icr.png)
-
 ### Valutazione su dataset MNIST
 
 I risultati ottenuti hanno confermato quanto detto: la funzione ReLU risulta più efficiente e ci concede migliori valori di accuracy (0.9934 contro 0.9906 ottenuto da tanh). 
 
-Il numero di epoche è invece risultato eccessivo, portando la rete a fare overfitting. Alla luce di ulteriori test, un numero migliore sarebbe intorno alle 50. Anche in questo caso, la ReLU ha mostrato un comportamento migliore rispetto tanh, che invece degrada già intorno alle 40 epoche. Visto il guadagno in precision ottenuto con 800 epoche, rispetto al tempo necessario, riteniamo che sia poco conveniente.
+Il numero di epoche è invece risultato eccessivo, portando la rete a fare overfitting. Alla luce di ulteriori test, un numero migliore sarebbe intorno alle 56. Anche in questo caso, la ReLU ha mostrato un comportamento migliore rispetto tanh, che invece degrada già intorno alle 40 epoche. Visto il guadagno in precision ottenuto con 800 epoche, rispetto al tempo necessario, riteniamo che sia poco conveniente.
 
 Il *tasso d'errore*, in fine, è dello **0.55%**: risulta migliore rispetto al primo modello di rete, ma ancora non raggiunge il valore di riferimento.
 
 ## Il terzo modello con distorsione
 
-Seguendo l'esempio della MCDNN, abbiamo deciso di introdurre una **fase di distorsione** delle immagini all'inizio di ogni epoca di training. Le operazioni di distorsione applicate sono della stessa tipologia di quelle usate per la MCDNN, ovvero si tratta di rotazioni (in una finestra di 40°), traslazioni (verticali e orizzontali) e scaling (del 10%), eseguite randomicamente a partire da un seed.
+Seguendo l'esempio della MCDNN, abbiamo deciso di introdurre una **distorsione** delle immagini all'inizio di ogni epoca di training. Le operazioni di distorsione applicate sono della stessa tipologia di quelle usate per la MCDNN, ovvero si tratta di rotazioni (in una finestra di 40°), traslazioni (verticali e orizzontali del 10%) e scaling (del 10%), eseguite randomicamente a partire da un seed.
 
 Il training viene eseguito inoltre in due tempi: inizialmente sulle immagini distorte, e in un secondo tempo sulle immagini originali, per avere qualche bias sulle immagini non deformate.
 
 Come ulteriore esperimento, abbiamo deciso di modificare la dimensione dell'hidden layer, portandolo da 150 a 200, supponendo che tale dimensione fosse dettata da motivi computazionali.
+
+Il terzo modello di CNN è dunque il seguente:
+
+![Terzo modello CNN](images/neural-network-icr.png)
 
 ### Valutazione
 
@@ -156,27 +156,33 @@ Il *tasso d'errore* è migliorato, raggiungendo lo **0.4**. Si tratta del miglio
 Aggiungendo un numero adeguato di colonne e con le opportune trasformazioni del dataset sembra quindi essere possibile raggiungere i risultati pubblicati dal paper, ovvero quello 0.23% che tanto si avvicina all'errore umano dello 0.2%.
 
 # Esperimenti sul dataset di In Codice Ratio
-Per affrontare il problema proposto abbiamo costruito e sperimentato su 3 diverse architetture. Di seguito riportiamo i modelli e i risultati degli esperimenti.
+Per affrontare il problema proposto abbiamo costruito e sperimentato su 3 diverse architetture. 
+Rispetto alle architetture usate per MNIST abbiamo ridotto la finestra della distorsione delle immagini (30° massimi di rotazione e zoom di massimo 10% con shift del 5%) a causa dela natura del dataset, preprocessato per avere le lettere in un angolo dell'immagine, con lettere molto simili tra loro poichè scritte da amanuensi. 
+Di seguito riportiamo i modelli e i risultati degli esperimenti. 
 
 ## Classificatori binari per singolo carattere
 L'architettura a 5 colonne con layer 30C-50C-200N è stata usata per condurre due diversi esperimenti sulla costruzione del training set, con un rapporto tra esempi positivi e negativi prima di 1:1 e poi di 1:2.
 
 Dalla **valutazione** sono risultati dei livelli d'accuracy e tassi d'errore distribuiti piuttosto uniformemente tra i diversi caratteri, quasi sempre sotto l'8% d'errore, sebbene troviamo alcune significative eccezioni.
 Lettere particolarmente difficili da distinguere sono state la **i**, la **m**, la **n**, la **u** e la **h**. Intuiamo che buona parte del problema, in generale anche per le altre lettere, sia posto nell'etichettatura del dataset, che contiene diversi errori commessi nella fase di crowdsourcing: vediamo infatti negli esempi di classificazione incorrette che molto spesso si trattava di immagini riconosciute correttamente dalla rete ma etichettate male dal dataset. Tuttavia la situazione si aggrava per lettere facilmente confondibili tra loro, che sono proprio la i, la m, la n e la u, che nella scrittura carolingia appaiono quasi come una concatenazione di i, o di corte linee verticali, distinguibili per lo più dal contesto e nel migliore dei casi dalla legatura del carattere alle lettere successive e precedenti. Per la **h** il problema è stato posto soprattutto dalla scarsità di esempi (circa 60).
-Di seguito riportiamo i tassi d'errore relativi alle lettere problematiche:
+Di seguito riportiamo i tassi d'errore relativi solo alle lettere problematiche:
 
-Carattere | Ratio pos:neg 1:1 | Ratio pos:neg 1:2
-----------|-------------------|------------------
-     i    |       17,5%       |       17,5% 
-     m    |        9,9%       |       10.3%
-     n    |       12,3%       |       12.9%
-     u    |         16%       |       15.8%  
-s_mediana |        3.3%       |        6.6%
-     h    |      22,22%       |       13.8%
-     f    |          5%       |        7.5%
+Carattere | Ratio pos:neg 1:1 | Ratio pos:neg 1:2 | Esito
+----------|-------------------|------------------ |
+     i    |       17,5%       |       17,5%       | =
+     m    |        9,9%       |       10.3%       | +
+     n    |       12,3%       |       12.9%       | +
+     u    |         16%       |       15.8%       | -
+s_mediana |        3.3%       |        6.6%       | +
+     h    |      22,22%       |       13.8%       | -
+     f    |          5%       |        7.5%       | +
+**media** |      **7.5%**     |      **7.1%**     | -
+
+Tutte le altre lettere hanno errori inferiori al 5%.
      
 La tabella ci mostra come il tasso d'errore cambi in positivo o in negativo in base alla lettera e alla ratio del training set. Abbiamo inoltre calcolato l'errore medio commesso da tutti i classificatori allenati sui due diversi training set: per il rapporto **1:1** abbiamo un **tasso d'errore medio** del **7,5%**, mentre per il rapporto **1:2** del **7,1%**, influenzato probabilmente dal netto miglioramento dell'errore sulla h. 
-Le cause di questa altalenanza sono da ricercarsi probabilmente nell'etichettatura del dataset, che in certi casi mostra tagli errati come buoni esempi. L'ambiguità del dataset porta all'incostanza della classificazione, per cui per un migliore allenamento è necessario un dataset ripulito.
+
+Le cause di questa altalenanza sono da ricercarsi probabilmente nell'etichettatura del dataset, che in certi casi mostra tagli errati come buoni esempi. L'ambiguità del dataset porta all'incostanza della classificazione, per cui per un migliore risultato è necessario un dataset ripulito. 
 
 ## Classificatore Multiclasse a 22 classi (OCR)
 Questo modello si basa sull'architettura a 5 colonne con layer 50C-100C-250N e si tratta di un'unica rete a 22 classi. Poiché svolge un diverso task da quello dei classificatori binari, che distinguono le singole lettere dalle altre e dal rumore, questa rete non è utilizzabile da sola per risolvere il problema posto, ma verrà inserita in una pipeline per raggiungere lo scopo desiderato.
@@ -228,8 +234,8 @@ Di seguito è fornita una tabella che riassume gli esiti dell'esperimento.
 
 Parola (taglio) | afferas (bad) | afferas (good) | unicu (good) | unicu (bad) | beneficiu (good) | beneficiu (bad) 
 --- | --- | --- | --- | --- | --- | ---
-Pipeline 1 | sls-s | asseras           | iuuci | unicu | siiescii | beuesiciu / beueficiu 
-Pipeline 2 | ----s | asseras / afferas | --u-- | unicu | ---ef--- | benes-c-u / benef-c-u
-Pipeline 3 | bld-s | asseras / afferas | iuuci | unicu | biiefoii | benesiciu / beneficiu 
+Pipeline 1 (22bin) | sls-s | asseras           | iuuci | unicu | siiescii | beuesiciu / beueficiu 
+Pipeline 2 (seg+ocr) | ----s | asseras / afferas | --u-- | unicu | ---ef--- | benes-c-u / benef-c-u
+Pipeline 3 (22bin+ocr)| bld-s | asseras / afferas | iuuci | unicu | biiefoii | benesiciu / beneficiu 
 
 La tabella mostra come la seconda pipeline sia la più efficace a riconoscere i tagli negativi e comunque ottima per i tagli positivi fatta eccezione di alcuni particolari tagli di "i", per i quali è già stata individuata la causa dell'anomalia.
