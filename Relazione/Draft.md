@@ -26,19 +26,17 @@ Realizzazione di diverse CNN con tensorflow, libreria Keras, in ambiente Windows
  - confronto con i modelli a lettera singola (necessario merge)
  - basso mae e alta precision
  - ~~utilizzare le reti binarie per segmentare o una rete segmentatrice?~~
-- Rete segmentatrice
-- Test su pipeline
- - Merge dei classificatori binari
- - Segmentatrice + Modello 22 classi
- - Classificatori binari + Modello 22 classi
+- ~~Rete segmentatrice~~
+- ~~Test su pipeline~~
+ - ~~Merge dei classificatori binari~~
+ - ~~Segmentatrice + Modello 22 classi~~
+ - ~~Classificatori binari + Modello 22 classi~~
 
 ## TO DO:
 * introduzione di callback per metriche
 * ~~realizzazione di altri modelli per valutare diversi risultati~~
 * ~~**valutare risultati del terzo modello di cnn**~~
 * ~~adattamento dell'input da MNIST al dataset di In Codice Ratio~~
-* ~~esperimento con Transfer Learning da Inception Model~~
-* test in ICR
 
 # Il problema
 
@@ -205,6 +203,7 @@ Questo classificatore è stato pensato per essere usato in serie con la rete mul
 Abbiamo eseguito due esperimenti con due diverse architetture, una analoga a quella dei classificatori binari per singolo carattere (30C-50C-200N) ed una analoga a quella del classificatore multiclasse (50C-100C-250N).
 
 Il primo esperimento ha raggiunto un'accuracy del **93,4%** ed un tasso d'errore del **6,5%**. Questo risultato è stato raggiunto già dalla singola colonna del secondo esperimento, e ciò ci lascia intuire che il numero di caratteristiche da estrarre per questo task è più elevato.
+
 **TODO aggiungere risultati ensemble**
 
 ## Pipeline
@@ -216,7 +215,7 @@ Abbiamo infine sperimentato 3 diverse pipeline per l'individuazione delle possib
 
 Abbiamo dunque effettuato 3 esperimenti con 3 parole diverse, ogni parola tagliata sia bene che male (principalmente in minimi locali ma non sempre).
 
-** TODO aggiungere immagini di UNA parola e dei suoi tagli**
+**TODO aggiungere immagini di UNA parola e dei suoi tagli**
 
 Abbiamo potuto constatare che le pipeline 1 e 3 si comportano in maniera simile per i tagli errati, giudicando in modo positivo il taglio quasi sempre. Al contrario la pipeline 2 individua correttamente tagli fatti male, giudicando positivamente solo tagli plausibili (ad esempio parte di una 'u' può essere tagliata per somigliare molto ad una 'i' e viene giudicata positivamente). 
 Ad esempio per il taglio sbagliato di "afferas", la pipeline 1 offre come possibilità "sls-s", la pipeline 2 "----s", mentre la pipeline 3 "bld-s". Ancor più clamoroso con "unicu" (una parola difficile che può essere tagliata in molti modi), le pipeline 1 e 3 classificano il cattivo taglio come "iuuci", mentre la pipeline 2 lo rifiuta quasi interamente e classifica come "--u--". Analogamente per "beneficiu", dove la pipeline 2 riconosce solo le lettere effettivamente tagliate bene, mentre le altre 2 pipeline danno un falso positivo per "siiescii" e "biiefoii".
