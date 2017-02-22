@@ -260,7 +260,30 @@ Pipeline 4 (seg+22bin)| 0.13 | 0.64 | 0.20 | 0.46 | 0.30 | 0.81 | 0.4
 
 ## Test su una pagina di manoscritto
 
-** //TODO **
+Per verificare l'effettiva capacità delle pipeline in una situazione di reale utilizzo, abbiamo sottoposto un'intera pagina di manoscritto, segmentata con l'attuale metodo, alla classificazione di tutte e 4 le strutture. Poiché si tratta di una pagina non etichettata, non abbiamo modo di calcolare in maniera rigorosa delle metriche di valutazione; ciò nonostante possiamo osservare il comportamento dei diversi modelli per certe situazioni che già avevamo notato nell'esperimento precedente, ovvero riguardo ai tagli errati e alle legature.
+
+Come già osservato, notiamo che le pipeline 1 e 3 hanno difficoltà nello scartare i tagli errati, per cui esempi come quelli riportati sotto vengono classificati come caratteri corretti.
+
+<div align="center">
+<img src="images/bad-cut-example1.png" alt="esempio taglio cattivo"/> 
+<img src="images/bad-cut-example4.png" alt="esempio taglio cattivo"/> 
+</div>
+
+Il primo esempio è un taglio troppo largo e viene classificato dalle pipeline 1 e 3 come s mediana, mentre le pipeline 2 e 4 riconoscono il taglio cattivo al 100%.
+Il secondo esempio è proprio il caso di una legatura 'fi': le pipeline 1 e 3 ancora una volta lo identificano come un taglio buono, la prima classificando come s mediana, la seconda come f; mentre le pipeline 2 e 4 riconoscono il taglio errato al 85%.
+
+Per quanto riguarda i tagli buoni, tutte le pipeline hanno un comportamento piuttosto buono, riuscendo a classificare bene i caratteri. Come esempi di buoni tagli portiamo due casi particolari per evidenziare due comportamenti.
+
+<div align="center">
+<img src="images/good-cut-exemple2.png" alt="esempio taglio buono"/> 
+<img src="images/good-cut-exemple1.png" alt="esempio taglio buono"/> 
+</div>
+
+Il primo esempio riporta il taglio buono di una i. Tutte le pipeline lo riconoscono correttamente come i, con una probabilità variabile dal 92 al 99%. Proponiamo questo esempio per evidenziare il miglioramento in particolare della rete segmentatrice nel riconoscere correttamente le i e a non misclassificarle come tagli errati di altre lettere, generando molti falsi negativi come avveniva prima del riaddestramento.
+Il secondo esempio riporta un buon taglio di a, ma in una forma sconosciuta alle reti perché non presente nel dataset. Si tratta di una a nel cui taglio troviamo un tratto orizzontale derivante da una t precedente o successiva. In questo caso, le pipeline 1 classifica correttamente la lettera a al 90%, mentre la pipeline 3 classifica il taglio come corretto per la a ma classifica la lettera come e. Le pipeline 2 e 4 classificano invece il taglio come errato.
+Esempi simili non sono attualmente presenti nel dataset, per cui il comportamento anomalo non stupisce: situazioni simili, come quelle che occorrono anche per le legature, saranno risolte ampliando il dataset con questo tipo di esempi.
+
+Quanto apprendiamo da questo esperimento non è altro che una conferma a quanto già riportato prima: la pipeline 2 si rivela essere la più efficace e efficiente, in quanto i tempi di esecuzione sono gli stessi riportati nell'esperimento precedente. Le pipeline 1 e 3 sono soggette a molti falsi positivi e classificano quasi sempre allo stesso modo, sebben la pipeline 3 abbia un miglior ranking. Le pipeline 2 e 4 sono entrambe molto più robuste ai falsi positivi, tuttavia cedono sporadicamente ad alcuni falsi negativi. Questi piccoli errori possono essere corretti utilizzando una seconda rete serie (la pipeline 3), oppure affidandosi al language model costruito appositamente per questo progetto.
 
 ## Librerie
 Sono state fornite tutte le funzionalità dei notebook in una libreria che permette training, loading, evaluation e prediction.
