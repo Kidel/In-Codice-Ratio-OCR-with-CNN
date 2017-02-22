@@ -89,3 +89,4 @@ ENV/
 .ropeproject
 Notebooks/distorted_data/
 Notebooks/not_code/
+sh.exe.stackdump
