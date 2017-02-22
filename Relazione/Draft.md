@@ -114,6 +114,8 @@ I risultati ottenuti hanno confermato quanto detto: la funzione ReLU risulta pi�
 
 Il numero di epoche è invece risultato eccessivo, portando la rete a fare overfitting. Alla luce di ulteriori test, un numero migliore sarebbe intorno alle 56. Anche in questo caso, la ReLU ha mostrato un comportamento migliore rispetto tanh, che invece degrada già intorno alle 40 epoche. Visto il guadagno in precision ottenuto con 800 epoche, rispetto al tempo necessario, riteniamo che sia poco conveniente.
 
+Il *tempo d'addestramento* è di **6 secondi** ad epoca su una GPU (GTX960ti con 2 GB) con 1024 cuda core, per cui impiega circa *un'ora e 10 minuti* per 800 epoche.
+
 Il *tasso d'errore*, in fine, è dello **0.55%**: risulta migliore rispetto al primo modello di rete, ma ancora non raggiunge il valore di riferimento.
 
 ## Il terzo modello con distorsione
@@ -132,7 +134,7 @@ Il terzo modello di CNN è dunque il seguente:
 
 La divisione dell'addestramento in due fasi, tra immagini distorte e immagini originali, ci mostra già buoni risultati: notiamo infatti che tra la prima e la seconda fase si ha un incremento dello 0.15% in precision.
 
-L'addestramento richiede chiaramente tempi più lunghi con questa architettura: notiamo infatti una dilatazione dei tempi per ogni epoca, passando da 6 secondi a 20 sulla nostra GPU media (GTX970). Il tempo totale per completare il training è stato di *3 ore*.
+L'addestramento richiede chiaramente tempi più lunghi con questa architettura: notiamo infatti una dilatazione dei tempi per ogni epoca, passando da 6 secondi a 20 sulla nostra GPU media (GTX960). Il *tempo* totale per completare il training è stato di **4 ore**.
 Ciò nonostante, il *tasso d'errore* scende considerevolemente da 0.55 a **0.45**, a parità di numero di epoche.
 
 L'aumento della dimensione dell'hidden layer inoltre ha portato un lieve miglioramento del tasso d'errore, raggiungendo lo **0.44**.
@@ -149,7 +151,7 @@ Per semplicità, abbiamo costruito una rete di 5 colonne anche se, come già spi
 
 ### Valutazione
 
-I tempi di addestramento sono proporzionali al numero di reti che costituiscono la multi colonna, non avendo la possibilità di parallelizzare il processo sul nostro attuale hardware. Il tempo impiegato è stato dunque di 12 ore.
+I *tempi* di addestramento sono proporzionali al numero di reti che costituiscono la multi colonna, non avendo la possibilità di parallelizzare il processo sul nostro attuale hardware. Il tempo impiegato è stato dunque di **12 ore** sulla nostra GPU migliore (GTX970ti con 4 GB). Per un confronto con le reti precedenti, riportiamo che con la nostra GPU media avrebbe impiegato all'incirca 16 ore.
 
 Il *tasso d'errore* è migliorato, raggiungendo lo **0.4**. Si tratta del miglior risultato ottenuto, e ci conferma quanto espresso dal paper, ovvero che la tecnica dell'ensemble learning offre effetivamente prestazioni migliori. Notiamo inoltre che abbiamo ottenuto un risultato analogo rispetto alla 5 MCDNN del paper che lavorando sulle immagini in dimensione originale, la quale ottiene un tasso d'errore identico.
 
@@ -161,7 +163,7 @@ Rispetto alle architetture usate per MNIST abbiamo ridotto la finestra della dis
 Di seguito riportiamo i modelli e i risultati degli esperimenti. 
 
 ## Classificatori binari per singolo carattere
-L'architettura a 5 colonne con layer 30C-50C-200N è stata usata per condurre due diversi esperimenti sulla costruzione del training set, con un rapporto tra esempi positivi e negativi prima di 1:1 e poi di 1:2.
+L'architettura a 5 colonne con layer 30C-50C-200N è stata usata per condurre due diversi esperimenti sulla costruzione del training set, con un rapporto tra esempi positivi e negativi prima di 1:1 e poi di 1:2. Il *tempo di addestramento medio* sulla GPU migliore è stato di **18 minuti** per la rete con rapporto 1:1, e di **28 minuti** per quella 1:2, impiegando rispettivamente *6:30 ore* e *10 ore* per l'addestramento di tutte e 22 le reti.
 
 Dalla **valutazione** sono risultati dei livelli d'accuracy e tassi d'errore distribuiti piuttosto uniformemente tra i diversi caratteri, quasi sempre sotto l'8% d'errore, sebbene troviamo alcune significative eccezioni.
 Lettere particolarmente difficili da distinguere sono state la **i**, la **m**, la **n**, la **u** e la **h**. Intuiamo che buona parte del problema, in generale anche per le altre lettere, sia posto nell'etichettatura del dataset, che contiene diversi errori commessi nella fase di crowdsourcing: vediamo infatti negli esempi di classificazione incorrette che molto spesso si trattava di immagini riconosciute correttamente dalla rete ma etichettate male dal dataset. Tuttavia la situazione si aggrava per lettere facilmente confondibili tra loro, che sono proprio la i, la m, la n e la u, che nella scrittura carolina appaiono quasi come una concatenazione di i, o di corte linee verticali, distinguibili per lo più dal contesto e nel migliore dei casi dalla legatura del carattere alle lettere successive e precedenti. Per la **h** il problema è stato posto soprattutto dalla scarsità di esempi (circa 60).
@@ -186,6 +188,7 @@ Le cause di questa altalenanza sono da ricercarsi probabilmente nell'etichettatu
 
 ## Classificatore Multiclasse a 22 classi (OCR)
 Questo modello si basa sull'architettura a 5 colonne con layer 50C-100C-250N e si tratta di un'unica rete a 22 classi. Poiché svolge un diverso task da quello dei classificatori binari, che distinguono le singole lettere dalle altre e dal rumore, questa rete non è utilizzabile da sola per risolvere il problema posto, ma verrà inserita in una pipeline per raggiungere lo scopo desiderato.
+Il *tempo di addestramento* è stato di poco più di **4 ore** sulla GPU migliore, circa *7 ore* sulla GPU media.
 
 La rete raggiunge il **95,1%** di **accuracy** e il **94,9%** di **recall**, con un **tasso d'errore** del **4,6%**. Ispezionando la matrice di confusione, si nota il buon comportamento della rete con poche eccezioni. I caratteri **h** e **f** vengono spesso scambiate rispettivamente con i caratteri **b** e **s alta**. Di seguito riportiamo i valori:
 
@@ -207,6 +210,7 @@ In generale ci aspettiamo che, come per i classificatori binari, una pulitura de
 ## Classificatore binario dei tagli (segmentatore)
 Questo classificatore è stato pensato per essere usato in serie con la rete multiclasse e ha il compito di stabilire se un dato segmento rappresenta un buon taglio o no. Il training set è stato costruito a partire da un'unificazione del dataset delle lettere tagliate bene (formando la classe "good") con un dataset aggiuntivo di tagli troppo grandi o troppo piccoli per ogni carattere (formando la classe "wrong").
 Abbiamo eseguito due esperimenti con due diverse architetture, una analoga a quella dei classificatori binari per singolo carattere (30C-50C-200N) ed una analoga a quella del classificatore multiclasse (50C-100C-250N).
+Queste due reti hanno evidentemente diversi *tempi di addestramento*, che sono rispettivamente di circa **4** e **8 ore** sulla GPU migliore.
 
 Il primo esperimento ha raggiunto un'accuracy del **93,4%** ed un tasso d'errore del **6,5%**. Questo risultato è stato raggiunto già dalla singola colonna del secondo esperimento, e ciò ci lascia intuire che il numero di caratteristiche da estrarre per questo task è più elevato.
 
