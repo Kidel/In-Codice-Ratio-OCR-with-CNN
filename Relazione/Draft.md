@@ -257,3 +257,10 @@ Pipeline 1 (22bin) | 15.9 | 0.63           | 0.48 | 0.47 | 0.74 | 0.86 | 3.1
 Pipeline 2 (seg+ocr) | 1.44 | 0.08 | 0.04 | 0.06 | 0.06 | 0.12 | 0.3
 Pipeline 3 (22bin+ocr)| 0.50 | 0.71 | 0.51 | 0.51 | 0.73 | 1.06 | 0.6
 Pipeline 4 (seg+22bin)| 0.13 | 0.64 | 0.20 | 0.46 | 0.30 | 0.81 | 0.4
+
+## Test su una pagina di manoscritto
+
+** //TODO **
+
+## Librerie
+Sono state fornite tutte le funzionalità dei notebook in una libreria che permette training, loading, evaluation e prediction.
