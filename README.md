@@ -18,3 +18,5 @@ The problem we faced in this repository wes just a part of ICR, basically its co
 </div>
 
 Other parts of ICR include a segmentation software, that is used to find words in a document and provide possible letter cuts to the OCR, and a **Language Model** to discriminate false positives among cuts classified by the OCR. The dataset is provided via a crowdsourcing platform. Those parts are not included in this repository.
+
+The folder "Notebooks" includes our experiments and examples. The folder "Relazione" contains a deatiled relation about what we did. The folder "Libreria" has everything that is needed to use, load or retrain our networks.
