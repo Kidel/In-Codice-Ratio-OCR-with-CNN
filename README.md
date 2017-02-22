@@ -8,11 +8,11 @@ The problem we faced in this repository wes just a part of ICR, basically its co
 
 ### Example
 
-* Bad cut of the word "asseras"
+* Bad cut of the word "asseras", recognized as "----s"
 <div align="center">
 <img src="Relazione/images/asseras-bad-cut.png" alt="tagli cattivi della parola asseras" width="400" /> 
 </div>
-* Good cut of the word "asseras"
+* Good cut of the word "asseras", recognized as "asseras"
 <div align="center">
 <img src="Relazione/images/asseras-good-cut.png" alt="tagli buoni della parola asseras" width="500" />
 </div>
