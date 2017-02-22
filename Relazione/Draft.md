@@ -217,11 +217,12 @@ Il primo esperimento ha raggiunto un'accuracy del **93,4%** ed un tasso d'errore
 **TODO aggiungere risultati ensemble**
 
 ## Pipeline
-Abbiamo infine sperimentato 3 diverse pipeline per l'individuazione delle possibili lettere all'interno della parola. Ogni pipeline prende in ingresso una possibile lettera ottenuta da tagli della parola nei minimi locali e decide se si tratta di una lettera ed eventualmente offre una lista di possibilità.
+Abbiamo infine sperimentato 4 diverse pipeline per l'individuazione delle possibili lettere all'interno della parola. Ogni pipeline prende in ingresso una possibile lettera ottenuta da tagli della parola nei minimi locali e decide se si tratta di una lettera ed eventualmente offre una lista di possibilità.
 
 * La prima pipeline utilizza solo i **22 classificatori binari** per decidere sia se il taglio è fatto bene, sia quale lettera è più probabile. Questa pipeline non permette un confronto preciso tra le probabilità delle lettere, poichè sono ottenute da dataset diversi.
 * La seconda pipeline utilizza il **classificatore binario dei tagli** per stabilire se il taglio ha individuato una sola lettera e, in caso affermativo, utilizza il **classificatore multiclasse** per fornire una lista di possibilità. In questo caso la probabilità delle lettere è normalizzata dal softmax layer della rete neurale.
 * La terza pipeline è un approccio ibrido ed usa i **22 classificatori binari** solo per decidere se il taglio è fatto bene o male (basta che vada bene ad uno solo dei classificatori) ed il **classificatore multiclasse** per ottenere le probabilità.
+* La quarta pipeline utilizza, come la seconda, il **classificatore binario dei tagli** per riconoscere la segmentazione, e i **22 classificatori binari** per produrre un ranking delle possibili lettere.
 
 Abbiamo dunque effettuato 3 esperimenti con 3 parole diverse, ogni parola tagliata sia bene che male (principalmente in minimi locali ma non sempre).
 
@@ -230,10 +231,10 @@ Abbiamo dunque effettuato 3 esperimenti con 3 parole diverse, ogni parola taglia
 <img src="images/asseras-good-cut.png" alt="tagli buoni della parola asseras" width="500" />
 </div>
 
-Abbiamo potuto constatare che le pipeline 1 e 3 si comportano in maniera simile per i tagli errati, giudicando quasi sempre in modo positivo il taglio. Al contrario la pipeline 2 individua correttamente tagli fatti male, giudicando positivamente solo tagli plausibili (ad esempio parte di una 'u' può essere tagliata per somigliare molto ad una 'i' e viene giudicata positivamente). 
-Ad esempio per il taglio sbagliato di "asseras", la pipeline 1 offre come possibilità "sls-s", la pipeline 2 "----s", mentre la pipeline 3 "bld-s" (dove '-' indica che il taglio è riconosciuto come sbagliato). Ancor più clamoroso con "unicu" (una parola difficile che può essere tagliata in molti modi), le pipeline 1 e 3 classificano il cattivo taglio come "iuuci", mentre la pipeline 2 lo rifiuta quasi interamente e classifica come "--u--". Analogamente per "beneficiu", dove la pipeline 2 riconosce solo le lettere effettivamente tagliate bene, mentre le altre 2 pipeline danno un falso positivo per "siiescii" e "biiefoii".
+Abbiamo potuto constatare che le pipeline 1 e 3 si comportano in maniera simile per i tagli errati, giudicando quasi sempre in modo positivo il taglio. Al contrario la pipeline 2 individua correttamente tagli fatti male, giudicando positivamente solo tagli plausibili (ad esempio parte di una 'u' può essere tagliata per somigliare molto ad una 'i' e viene giudicata positivamente). La pipeline 4 ha un comportamento simile.
+Ad esempio per il taglio sbagliato di "asseras", la pipeline 1 offre come possibilità "sls-s", la pipeline 2 e 4 "----s", mentre la pipeline 3 "bld-s" (dove '-' indica che il taglio è riconosciuto come sbagliato). Ancor più clamoroso con "unicu" (una parola difficile che può essere tagliata in molti modi), le pipeline 1 e 3 classificano il cattivo taglio come "iuuci", mentre le pipeline 2 e 4 lo rifiutano quasi interamente e classificano come "-uu--". Analogamente per "beneficiu", dove le pipeline 2 e 4 riconoscono solo le lettere effettivamente tagliate bene, mentre le altre pipeline danno un falso positivo per "siiescii" e "biiefoii".
 
-Per quanto riguarda  i tagli corretti, anche in questo caso l'opzione migliore si è rivelata essere la pipeline 2, alla pari con la pipeline 3, mentre la pipeline 1 risulta essere la peggiore. Ad esempio per la parola "beneficiu", l'assenza di una distribuzione di probabilità per le lettere, che è mescolata con la probabilità di un buon taglio, fallisce nel riconoscere la "n", fornendo come classificazione più probabile "beuesiciu", mentre le altre 2 pipeline classificano più correttamente.
+Per quanto riguarda  i tagli corretti, anche in questo caso l'opzione migliore si è rivelata essere la pipeline 2, alla pari con le pipeline 3 e 4, mentre la pipeline 1 risulta essere la peggiore. Ad esempio per la parola "beneficiu", l'assenza di una distribuzione di probabilità per le lettere, che è mescolata con la probabilità di un buon taglio, fallisce nel riconoscere la "n", fornendo come classificazione più probabile "beuesiciu", mentre le altre 2 pipeline classificano più correttamente. La pipeline 4, pur riportando nel ranking le lettere giuste come la n e la f, le classifica con uno score più basso, interpretando comunque la parola come "beues-ciu".
 
 In generale abbiamo notato che le pipeline 1 e 3 offrono molti falsi positivi, mentre la pipeline 2 è più robusta ed ha problemi solo con alcuni falsi negativi quando si tratta delle "i". Il problema è stato individuato ed attribuito ad un numero elevato di "cattivi tagli" di "m", "n" ed "u" identici ad una "i", che quindi viene classificata spesso in modo negativo. Per bilanciare la classificazione e spostare l'ago verso i falsi positivi è necessario rimuovere lettere identiche alle "i" dai tagli "too narrow" di "m", "n" ed "u". 
 
@@ -242,7 +243,17 @@ Di seguito è fornita una tabella che riassume gli esiti dell'esperimento.
 Parola (taglio) | asseras (bad) | asseras (good) | unicu (bad) | unicu (good) | beneficiu (bad) | beneficiu (good) 
 --- | --- | --- | --- | --- | --- | ---
 Pipeline 1 (22bin) | sls-s | asseras           | iuuci | unicu | siiescii | beuesiciu / beneficiu 
-Pipeline 2 (seg+ocr) | ----s | asseras | --u-- | unicu | ---ef--- | benes-c-u / benef-c-u
+Pipeline 2 (seg+ocr) | ----s | asseras | -uu-- | unicu | ---ef--- | benes-c-u / benef-c-u
 Pipeline 3 (22bin+ocr)| bld-s | asseras | iuuci | unicu | biiefoii | benesiciu / beneficiu 
+Pipeline 4 (seg+22bin)| ----s | asseras | -uu-- | unicu | ---ef--i | beues-ciu / beuef-ciu
 
 La tabella mostra come la seconda pipeline sia la più efficace nel riconoscere i tagli negativi e comunque ottima per i tagli positivi, fatta eccezione di alcuni particolari tagli di "i", per i quali è già stata individuata la causa dell'anomalia.
+
+Per quanto riguarda i *tempi di esecuzione*, la pipeline 2 risulta essere la più efficiente, impiegando generalmente un ordine di grandezza di meno rispetto alle altre. Di seguito riportiamo i tempi e la media delle esecuzioni:
+
+Parola (taglio) | asseras (bad) | asseras (good) | unicu (bad) | unicu (good) | beneficiu (bad) | beneficiu (good) | media
+--- | :---: | :---: | :---: | :---: | :---: | :---: | :---:
+Pipeline 1 (22bin) | 15.9 | 0.63           | 0.48 | 0.47 | 0.74 | 0.86 | 3.1
+Pipeline 2 (seg+ocr) | 1.44 | 0.08 | 0.04 | 0.06 | 0.06 | 0.12 | 0.3
+Pipeline 3 (22bin+ocr)| 0.50 | 0.71 | 0.51 | 0.51 | 0.73 | 1.06 | 0.6
+Pipeline 4 (seg+22bin)| 0.13 | 0.64 | 0.20 | 0.46 | 0.30 | 0.81 | 0.4
