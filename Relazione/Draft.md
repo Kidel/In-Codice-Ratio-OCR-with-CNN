@@ -1,42 +1,4 @@
-# Realizzazione CNN per In Codice Ratio
-
-Realizzazione di diverse CNN con tensorflow, libreria Keras, in ambiente Windows con supporto per GPU per Cuda cores (Nvidia).
-
-- Installazione ambiente di sviluppo
-- Realizzazione di un primo modello (standard keras) su dataset MNIST
-- Studio del [MCDNN for image recognition](http://people.idsia.ch/~ciresan/data/cvpr2012.pdf) di Dan Ciresan, Ueli Meier e Jurgen Schmidhuber: architettura DNN, combinazione di più colonne di DNN in una multi-colonna (approccio ensemble learning), processo di training con distorsione dell'immagine ad ogni epoca, funzioni di attivazione (tanh, lineare, softmax), dataset sperimentali (MNIST, NIST SD 19, CIFAR 10, caratteri cinesi, immagini stereo di oggetti 3d).
-- Studio di [Regularization of Neural Networks using DropConnect](http://cs.nyu.edu/~wanli/dropc/).
-- Realizzazione di un modello basato sul [paper](http://people.idsia.ch/~ciresan/data/cvpr2012.pdf) e [DropConnect](http://cs.nyu.edu/~wanli/dropc/) e confronto con activation function più recente:
- - Funzione di attivazione **relu** è risultata migliore di tanh (0.9934 vs 0.9906 accuracy nelle stesse condizioni e durante tutte le epoche).
- - Confronto tra [algoritmi di ottimizzazione](http://cs.stanford.edu/people/karpathy/convnetjs/demo/trainers.html) su MNIST.
- - 800 epoche risultano in overfitting, un numero migliore è nell'ordine di 50-650.
- - Errore intorno allo 0.55%.
-- Terzo modello di CNN:
- - Introduzione di distorsione randomica delle immagini: rotazione in una finestra di 30°, shift verticale e orizzontale e zoom in un range del 10%. Sono state testate finestre maggiori e minori di 30° e presenza o assenza di shift e zoom. E' stata testata la presenza o meno di epoche con dataset pulito. 25 epoche alla fine del precedente training sono risultate positive per la precision senza portare a overfitting.
-- Quarto modello:
- - Applicazione della tecnica ensemble learning alla rete multicolonna. Miglior prestazione ottenuta: 0.4 error rate.
-- Realizzazione di una o più librerie:
- - libreria ```OCR_NN``` che espone funzioni di inizializzazione, training, valutazione e classificazione.
- - libreria util per il plotting di grafici e metriche.
- 
-### test su ICR
-- Classificatori binari per singolo carattere 
- - test su dataset ICR
-- Modello a 22 classi
- - confronto con i modelli a lettera singola (necessario merge)
- - basso mae e alta precision
- - ~~utilizzare le reti binarie per segmentare o una rete segmentatrice?~~
-- ~~Rete segmentatrice~~
-- ~~Test su pipeline~~
- - ~~Merge dei classificatori binari~~
- - ~~Segmentatrice + Modello 22 classi~~
- - ~~Classificatori binari + Modello 22 classi~~
-
-## TO DO:
-* introduzione di callback per metriche
-* ~~realizzazione di altri modelli per valutare diversi risultati~~
-* ~~**valutare risultati del terzo modello di cnn**~~
-* ~~adattamento dell'input da MNIST al dataset di In Codice Ratio~~
+# OCR tramite reti neurali convoluzionali per il progetto In Codice Ratio
 
 # Il problema
 
@@ -85,7 +47,7 @@ Le immagini di input vengono preprocessate a monte del training, e successivamen
 
 Il training termina quando l'errore sul validation set arriva a zero, o quando il tasso di apprendimento raggiunge un minimo prestabilito.
 
-Il modello ha una forte base biologica, ispirato alle reali connessioni presenti tra la retina e la corteccia visiva nei mammiferi.
+Il modello ha inoltre una forte base biologica, essendo ispirato alle reali connessioni presenti tra la retina e la corteccia visiva nei mammiferi.
 
 ### Esperimenti
 
@@ -134,14 +96,12 @@ Il terzo modello di CNN è dunque il seguente:
 
 La divisione dell'addestramento in due fasi, tra immagini distorte e immagini originali, ci mostra già buoni risultati: notiamo infatti che tra la prima e la seconda fase si ha un incremento dello 0.15% in precision.
 
-L'addestramento richiede chiaramente tempi più lunghi con questa architettura: notiamo infatti una dilatazione dei tempi per ogni epoca, passando da 6 secondi a 20 sulla nostra GPU media (GTX960). Il *tempo* totale per completare il training è stato di **4 ore**.
+L'addestramento richiede chiaramente tempi più lunghi con questa architettura: notiamo infatti una dilatazione dei tempi per ogni epoca, passando da 6 secondi a **20** sulla nostra GPU media (GTX960). Il *tempo* totale per completare il training è stato di **4 ore**.
 Ciò nonostante, il *tasso d'errore* scende considerevolemente da 0.55 a **0.45**, a parità di numero di epoche.
 
 L'aumento della dimensione dell'hidden layer inoltre ha portato un lieve miglioramento del tasso d'errore, raggiungendo lo **0.44**.
 
 Si tratta di un buono risultato, molto vicino a quanto ottenuto dalla DNN semplice del paper.
-
-Resta comunque aperta la questione della convenienza, ovvero se valga la pena di attendere un addestramento di 3 ore, rispetto ai 4 minuti della rete precedente, per ottenere un incremento di precision dello 0.10%.
 
 ## Il quarto modello multi colonna
 
@@ -151,9 +111,9 @@ Per semplicità, abbiamo costruito una rete di 5 colonne anche se, come già spi
 
 ### Valutazione
 
-I *tempi* di addestramento sono proporzionali al numero di reti che costituiscono la multi colonna, non avendo la possibilità di parallelizzare il processo sul nostro attuale hardware. Il tempo impiegato è stato dunque di **12 ore** sulla nostra GPU migliore (GTX970ti con 4 GB). Per un confronto con le reti precedenti, riportiamo che con la nostra GPU media avrebbe impiegato all'incirca 16 ore.
+I *tempi* di addestramento sono proporzionali al numero di reti che costituiscono la multicolonna, non avendo la possibilità di parallelizzare il processo sul nostro attuale hardware. Il tempo impiegato è stato dunque di **12 ore** sulla nostra GPU migliore (GTX970ti con 4 GB). Per un confronto con le reti precedenti, riportiamo che con la nostra GPU media avrebbe impiegato all'incirca 16 ore.
 
-Il *tasso d'errore* è migliorato, raggiungendo lo **0.4**. Si tratta del miglior risultato ottenuto, e ci conferma quanto espresso dal paper, ovvero che la tecnica dell'ensemble learning offre effetivamente prestazioni migliori. Notiamo inoltre che abbiamo ottenuto un risultato analogo rispetto alla 5 MCDNN del paper che lavorando sulle immagini in dimensione originale, la quale ottiene un tasso d'errore identico.
+Il *tasso d'errore* è migliorato, raggiungendo lo **0.4**. Si tratta del miglior risultato ottenuto, e ci conferma quanto espresso dal paper, ovvero che la tecnica dell'ensemble learning offre effetivamente prestazioni migliori. Notiamo inoltre che abbiamo ottenuto un risultato analogo rispetto alla 5 MCDNN del paper lavorando sulle immagini in dimensione originale, la quale ottiene un tasso d'errore identico.
 
 Aggiungendo un numero adeguato di colonne e con le opportune trasformazioni del dataset sembra quindi essere possibile raggiungere i risultati pubblicati dal paper, ovvero quello 0.23% che tanto si avvicina all'errore umano dello 0.2%.
 
@@ -166,7 +126,7 @@ Di seguito riportiamo i modelli e i risultati degli esperimenti.
 L'architettura a 5 colonne con layer 30C-50C-200N è stata usata per condurre due diversi esperimenti sulla costruzione del training set, con un rapporto tra esempi positivi e negativi prima di 1:1 e poi di 1:2. Il *tempo di addestramento medio* sulla GPU migliore è stato di **18 minuti** per la rete con rapporto 1:1, e di **28 minuti** per quella 1:2, impiegando rispettivamente *6:30 ore* e *10 ore* per l'addestramento di tutte e 22 le reti.
 
 Dalla **valutazione** sono risultati dei livelli d'accuracy e tassi d'errore distribuiti piuttosto uniformemente tra i diversi caratteri, quasi sempre sotto l'8% d'errore, sebbene troviamo alcune significative eccezioni.
-Lettere particolarmente difficili da distinguere sono state la **i**, la **m**, la **n**, la **u** e la **h**. Intuiamo che buona parte del problema, in generale anche per le altre lettere, sia posto nell'etichettatura del dataset, che contiene diversi errori commessi nella fase di crowdsourcing: vediamo infatti negli esempi di classificazione incorrette che molto spesso si trattava di immagini riconosciute correttamente dalla rete ma etichettate male dal dataset. Tuttavia la situazione si aggrava per lettere facilmente confondibili tra loro, che sono proprio la i, la m, la n e la u, che nella scrittura carolina appaiono quasi come una concatenazione di i, o di corte linee verticali, distinguibili per lo più dal contesto e nel migliore dei casi dalla legatura del carattere alle lettere successive e precedenti. Per la **h** il problema è stato posto soprattutto dalla scarsità di esempi (circa 60).
+Lettere particolarmente difficili da distinguere sono state la **'i'**, la **'m'**, la **'n'**, la **'u'** e la **'h'**. Intuiamo che buona parte del problema, in generale anche per le altre lettere, sia posto nell'etichettatura del dataset, che contiene diversi errori commessi nella fase di crowdsourcing: vediamo infatti negli esempi di classificazione incorrette che molto spesso si trattava di immagini riconosciute correttamente dalla rete ma etichettate male nel dataset. Tuttavia la situazione si aggrava per lettere facilmente confondibili tra loro, che sono proprio la 'i', la 'm', la 'n' e la 'u', che nella scrittura carolina appaiono quasi come una concatenazione di 'i', o di corte linee verticali, distinguibili per lo più dal contesto e nel migliore dei casi dalla legatura del carattere alle lettere successive e precedenti. Per la **'h'** il problema è stato posto soprattutto dalla scarsità di esempi (circa 60).
 Di seguito riportiamo i tassi d'errore relativi solo alle lettere problematiche:
 
 Carattere | Ratio pos:neg 1:1 | Ratio pos:neg 1:2 | Esito
@@ -182,7 +142,7 @@ s_mediana |        3.3%       |        6.6%       | +
 
 Tutte le altre lettere hanno errori inferiori al 5%.
      
-La tabella ci mostra come il tasso d'errore cambi in positivo o in negativo in base alla lettera e alla ratio del training set. Abbiamo inoltre calcolato l'errore medio commesso da tutti i classificatori allenati sui due diversi training set: per il rapporto **1:1** abbiamo un **tasso d'errore medio** del **7,5%**, mentre per il rapporto **1:2** del **7,1%**, influenzato probabilmente dal netto miglioramento dell'errore sulla h. 
+La tabella ci mostra come il tasso d'errore cambi in positivo o in negativo in base alla lettera e alla ratio del training set. Abbiamo inoltre calcolato l'errore medio commesso da tutti i classificatori allenati sui due diversi training set: per il rapporto **1:1** abbiamo un **tasso d'errore medio** del **7,2%**, mentre per il rapporto **1:2** del **7,1%**, influenzato probabilmente dal netto miglioramento dell'errore sulla 'h'. 
 
 Le cause di questa altalenanza sono da ricercarsi probabilmente nell'etichettatura del dataset, che in certi casi mostra tagli errati come buoni esempi. L'ambiguità del dataset porta all'incostanza della classificazione, per cui per un migliore risultato è necessario un dataset ripulito. 
 
@@ -190,7 +150,7 @@ Le cause di questa altalenanza sono da ricercarsi probabilmente nell'etichettatu
 Questo modello si basa sull'architettura a 5 colonne con layer 50C-100C-250N e si tratta di un'unica rete a 22 classi. Poiché svolge un diverso task da quello dei classificatori binari, che distinguono le singole lettere dalle altre e dal rumore, questa rete non è utilizzabile da sola per risolvere il problema posto, ma verrà inserita in una pipeline per raggiungere lo scopo desiderato.
 Il *tempo di addestramento* è stato di poco più di **4 ore** sulla GPU migliore, circa *7 ore* sulla GPU media.
 
-La rete raggiunge il **95,1%** di **accuracy** e il **94,9%** di **recall**, con un **tasso d'errore** del **4,6%**. Ispezionando la matrice di confusione, si nota il buon comportamento della rete con poche eccezioni. I caratteri **h** e **f** vengono spesso scambiate rispettivamente con i caratteri **b** e **s alta**. Di seguito riportiamo i valori:
+La rete raggiunge il **95,1%** di **accuracy** e il **94,9%** di **recall**, con un **tasso d'errore** del **4,6%**. Ispezionando la matrice di confusione, si nota il buon comportamento della rete con poche eccezioni. I caratteri **'h'** e **'f'** vengono spesso scambiate rispettivamente con i caratteri **'b'** e **'s alta'**. Di seguito riportiamo i valori:
 
 
 Carattere |         h         |         b
@@ -203,7 +163,7 @@ Carattere |         f         |       s_alta
      f    |        14         |          5 
   s_alta  |        23         |         90
 
-L'errore sembra nascere dalla carenza di buoni esempi di h e f nel dataset, per cui la rete tende a confondere queste lettere con i due caratteri che più somigliano. Non è da escludere la presenza di errori nell'etichettatura effettuata dal crowdsourcing, soprattutto per i caratteri s e f che sono molto simili.
+L'errore sembra nascere dalla carenza di buoni esempi di 'h' e 'f' nel dataset, per cui la rete tende a confondere queste lettere con i due caratteri che più somigliano. Non è da escludere la presenza di errori nell'etichettatura effettuata dal crowdsourcing, soprattutto per i caratteri 's' e 'f' che sono molto simili.
 
 In generale ci aspettiamo che, come per i classificatori binari, una pulitura del dataset possa portare ad ancora migliori prestazioni e a risolvere questi casi particolari.
 
@@ -214,12 +174,12 @@ Queste due reti hanno evidentemente diversi *tempi di addestramento*, che sono r
 
 Il primo esperimento ha raggiunto un'accuracy del **93,4%** ed un tasso d'errore del **6,5%**. Questo risultato è stato raggiunto già dalla singola colonna del secondo esperimento, e ciò ci lascia intuire che il numero di caratteristiche da estrarre per questo task è più elevato.
 
-Per rimediare alla tendenza della rete a individuare falsi negativi, in particolare nei casi di buoni tagli di lettere i, classificati come cattivi tagli di altre lettere quali m, n, u; abbiamo riallenato la rete eliminando dagli esempi negativi gran parte dei tagli sbagliati che risultano molto simili a buoni tagli di i. In questo modo siamo riusciti a mitigare leggermente questa tendenza, ottenendo un'accuracy del **93,7%** ed un tasso d'errore del **6,2%**. Ripulendo ulteriormente il dataset, ed eliminando tutto ciò che somiglia ad una i, non otteniamo comunque risultati migliori: le i contenute nelle legature (ad esempio in 'fi') non vengono comunque riconosciute, mentre i tagli sbagliati vengono riconosciuti quasi tutti come i.
+Per rimediare alla tendenza della rete a individuare falsi negativi, in particolare nei casi di buoni tagli di lettere 'i', classificati come cattivi tagli di altre lettere quali 'm', 'n' e 'u', abbiamo riallenato la rete eliminando dagli esempi negativi gran parte dei tagli sbagliati che risultano molto simili a buoni tagli di 'i'. In questo modo siamo riusciti a mitigare leggermente questa tendenza, ottenendo un'accuracy del **93,7%** ed un tasso d'errore del **6,2%**. Ripulendo ulteriormente il dataset, ed eliminando tutto ciò che somiglia ad una 'i', non otteniamo comunque risultati migliori: le 'i' contenute nelle legature (ad esempio in 'fi') non vengono comunque riconosciute, mentre i tagli sbagliati vengono riconosciuti quasi tutti come 'i'.
 
 ## Pipeline
 Abbiamo infine sperimentato 4 diverse pipeline per l'individuazione delle possibili lettere all'interno della parola. Ogni pipeline prende in ingresso una possibile lettera ottenuta da tagli della parola nei minimi locali e decide se si tratta di una lettera ed eventualmente offre una lista di possibilità.
 
-* La prima pipeline utilizza solo i **22 classificatori binari** per decidere sia se il taglio è fatto bene, sia quale lettera è più probabile. Questa pipeline non permette un confronto preciso tra le probabilità delle lettere, poichè sono ottenute da dataset diversi.
+* La prima pipeline utilizza solo i **22 classificatori binari** per decidere sia se il taglio è fatto bene, sia quale lettera è più probabile. Questa pipeline non permette un confronto preciso tra le probabilità delle lettere, poiché sono ottenute da dataset diversi.
 * La seconda pipeline utilizza il **classificatore binario dei tagli** per stabilire se il taglio ha individuato una sola lettera e, in caso affermativo, utilizza il **classificatore multiclasse** per fornire una lista di possibilità. In questo caso la probabilità delle lettere è normalizzata dal softmax layer della rete neurale.
 * La terza pipeline è un approccio ibrido ed usa i **22 classificatori binari** solo per decidere se il taglio è fatto bene o male (basta che vada bene ad uno solo dei classificatori) ed il **classificatore multiclasse** per ottenere le probabilità.
 * La quarta pipeline utilizza, come la seconda, il **classificatore binario dei tagli** per riconoscere la segmentazione, e i **22 classificatori binari** per produrre un ranking delle possibili lettere.
@@ -231,12 +191,12 @@ Abbiamo dunque effettuato 3 esperimenti con 3 parole diverse, ogni parola taglia
 <img src="images/asseras-good-cut.png" alt="tagli buoni della parola asseras" width="500" />
 </div>
 
-Abbiamo potuto constatare che le pipeline 1 e 3 si comportano in maniera simile per i tagli errati, giudicando quasi sempre in modo positivo il taglio. Al contrario la pipeline 2 individua correttamente tagli fatti male, giudicando positivamente solo tagli plausibili (ad esempio parte di una 'u' può essere tagliata per somigliare molto ad una 'i' e viene giudicata positivamente). La pipeline 4 ha un comportamento simile.
+Abbiamo potuto constatare che le pipeline 1 e 3 si comportano in maniera simile per i tagli errati, giudicando quasi sempre in modo positivo il taglio. Al contrario la pipeline 2 individua correttamente tagli fatti male, giudicando positivamente solo tagli plausibili (ad esempio parte di una 'u' può essere tagliata per somigliare molto ad una 'i' e viene giudicata positivamente). La pipeline 4 ha un comportamento analogo.
 Ad esempio per il taglio sbagliato di "asseras", la pipeline 1 offre come possibilità "sls-s", la pipeline 2 e 4 "----s", mentre la pipeline 3 "bld-s" (dove '-' indica che il taglio è riconosciuto come sbagliato). Ancor più clamoroso con "unicu" (una parola difficile che può essere tagliata in molti modi), le pipeline 1 e 3 classificano il cattivo taglio come "iuuci", mentre le pipeline 2 e 4 lo rifiutano quasi interamente e classificano come "-uu--". Analogamente per "beneficiu", dove le pipeline 2 e 4 riconoscono solo le lettere effettivamente tagliate bene, mentre le altre pipeline danno un falso positivo per "siiescii" e "biiefoii".
 
-Per quanto riguarda  i tagli corretti, anche in questo caso l'opzione migliore si è rivelata essere la pipeline 2, alla pari con le pipeline 3 e 4, mentre la pipeline 1 risulta essere la peggiore. Ad esempio per la parola "beneficiu", l'assenza di una distribuzione di probabilità per le lettere, che è mescolata con la probabilità di un buon taglio, fallisce nel riconoscere la "n", fornendo come classificazione più probabile "beuesiciu", mentre le altre 2 pipeline classificano più correttamente. La pipeline 4, pur riportando nel ranking le lettere giuste come la n e la f, le classifica con uno score più basso, interpretando comunque la parola come "beues-ciu".
+Per quanto riguarda  i tagli corretti, anche in questo caso l'opzione migliore si è rivelata essere la pipeline 2, alla pari con le pipeline 3 e 4, mentre la pipeline 1 risulta essere la peggiore. Ad esempio per la parola "beneficiu", l'assenza di una distribuzione di probabilità per le lettere, che è mescolata con la probabilità di un buon taglio, fallisce nel riconoscere la 'n', fornendo come classificazione più probabile "beuesiciu", mentre le altre 2 pipeline classificano più correttamente. La pipeline 4, pur riportando nel ranking le lettere giuste come la 'n' e la 'f', le classifica con uno score più basso, interpretando comunque la parola come "beues-ciu".
 
-In generale abbiamo notato che le pipeline 1 e 3 offrono molti falsi positivi, mentre la pipeline 2 è più robusta ed ha problemi solo con alcuni falsi negativi quando si tratta delle "i". Il problema è stato individuato ed attribuito ad un numero elevato di "cattivi tagli" di "m", "n" ed "u" identici ad una "i", che quindi viene classificata spesso in modo negativo. Per bilanciare la classificazione e spostare l'ago verso i falsi positivi è necessario rimuovere lettere identiche alle "i" dai tagli "too narrow" di "m", "n" ed "u". 
+In generale abbiamo notato che le *pipeline 1 e 3* offrono molti *falsi positivi*, mentre le *pipeline 2 e 4* sono più robusta ed hanno problemi solo con alcuni *falsi negativi* quando si tratta delle 'i'. Il problema è stato individuato ed attribuito ad un numero elevato di "cattivi tagli" di 'm', 'n' ed 'u' identici ad una 'i', che quindi viene classificata spesso in modo negativo. Per bilanciare la classificazione e spostare l'ago verso i falsi positivi è stato necessario rimuovere lettere identiche alle 'i' dai tagli "too narrow" di 'm', 'n' ed 'u'. 
 
 Di seguito è fornita una tabella che riassume gli esiti dell'esperimento.
 
@@ -247,7 +207,7 @@ Pipeline 2 (seg+ocr) | ----s | asseras | -uu-- | unicu | ---ef--- | benes-c-u / 
 Pipeline 3 (22bin+ocr)| bld-s | asseras | iuuci | unicu | biiefoii | benesiciu / beneficiu 
 Pipeline 4 (seg+22bin)| ----s | asseras | -uu-- | unicu | ---ef--i | beues-ciu / beuef-ciu
 
-La tabella mostra come la seconda pipeline sia la più efficace nel riconoscere i tagli negativi e comunque ottima per i tagli positivi, fatta eccezione di alcuni particolari tagli di "i", per i quali è già stata individuata la causa dell'anomalia.
+La tabella mostra come la seconda pipeline sia la più efficace nel riconoscere i tagli negativi e comunque ottima per i tagli positivi, fatta eccezione di alcuni particolari tagli di 'i', per i quali è già stata individuata la causa dell'anomalia.
 
 Per quanto riguarda i *tempi di esecuzione*, la pipeline 2 risulta essere la più efficiente, impiegando generalmente un ordine di grandezza di meno rispetto alle altre. Di seguito riportiamo i tempi e la media delle esecuzioni:
 
@@ -260,7 +220,7 @@ Pipeline 4 (seg+22bin)| 0.13 | 0.64 | 0.20 | 0.46 | 0.30 | 0.81 | 0.4
 
 ## Test su una pagina di manoscritto
 
-Per verificare l'effettiva capacità delle pipeline in una situazione di reale utilizzo, abbiamo sottoposto un'intera pagina di manoscritto, segmentata con l'attuale metodo, alla classificazione di tutte e 4 le strutture. Poiché si tratta di una pagina non etichettata, non abbiamo modo di calcolare in maniera rigorosa delle metriche di valutazione; ciò nonostante possiamo osservare il comportamento dei diversi modelli per certe situazioni che già avevamo notato nell'esperimento precedente, ovvero riguardo ai tagli errati e alle legature.
+Per verificare l'effettiva capacità delle pipeline in una situazione di reale utilizzo, abbiamo sottoposto un'intera pagina di manoscritto, segmentata con l'attuale metodo, alla classificazione di tutte e 4 le strutture. Poiché si tratta di una pagina non etichettata, non abbiamo modo di calcolare in maniera rigorosa delle metriche di valutazione; ciononostante possiamo osservare il comportamento dei diversi modelli per certe situazioni che già avevamo notato nell'esperimento precedente, ovvero riguardo ai tagli errati e alle legature.
 
 Come già osservato, notiamo che le pipeline 1 e 3 hanno difficoltà nello scartare i tagli errati, per cui esempi come quelli riportati sotto vengono classificati come caratteri corretti.
 
@@ -270,7 +230,7 @@ Come già osservato, notiamo che le pipeline 1 e 3 hanno difficoltà nello scart
 </div>
 
 Il primo esempio è un taglio troppo largo e viene classificato dalle pipeline 1 e 3 come s mediana, mentre le pipeline 2 e 4 riconoscono il taglio cattivo al 100%.
-Il secondo esempio è proprio il caso di una legatura 'fi': le pipeline 1 e 3 ancora una volta lo identificano come un taglio buono, la prima classificando come s mediana, la seconda come f; mentre le pipeline 2 e 4 riconoscono il taglio errato al 85%.
+Il secondo esempio è proprio il caso di una legatura 'fi': le pipeline 1 e 3 ancora una volta lo identificano come un taglio buono, la prima classificando come 's mediana', la seconda come 'f'; mentre le pipeline 2 e 4 riconoscono il taglio errato al 85%.
 
 Per quanto riguarda i tagli buoni, tutte le pipeline hanno un comportamento piuttosto buono, riuscendo a classificare bene i caratteri. Come esempi di buoni tagli portiamo due casi particolari per evidenziare due comportamenti.
 
@@ -279,11 +239,11 @@ Per quanto riguarda i tagli buoni, tutte le pipeline hanno un comportamento piut
 <img src="images/good-cut-exemple1.png" alt="esempio taglio buono"/> 
 </div>
 
-Il primo esempio riporta il taglio buono di una i. Tutte le pipeline lo riconoscono correttamente come i, con una probabilità variabile dal 92 al 99%. Proponiamo questo esempio per evidenziare il miglioramento in particolare della rete segmentatrice nel riconoscere correttamente le i e a non misclassificarle come tagli errati di altre lettere, generando molti falsi negativi come avveniva prima del riaddestramento.
-Il secondo esempio riporta un buon taglio di a, ma in una forma sconosciuta alle reti perché non presente nel dataset. Si tratta di una a nel cui taglio troviamo un tratto orizzontale derivante da una t precedente o successiva. In questo caso, le pipeline 1 classifica correttamente la lettera a al 90%, mentre la pipeline 3 classifica il taglio come corretto per la a ma classifica la lettera come e. Le pipeline 2 e 4 classificano invece il taglio come errato.
-Esempi simili non sono attualmente presenti nel dataset, per cui il comportamento anomalo non stupisce: situazioni simili, come quelle che occorrono anche per le legature, saranno risolte ampliando il dataset con questo tipo di esempi.
+Il primo esempio riporta il taglio buono di una 'i'. Tutte le pipeline lo riconoscono correttamente come 'i', con una probabilità variabile dal 92 al 99%. Proponiamo questo esempio per evidenziare il miglioramento in particolare della rete segmentatrice nel riconoscere correttamente le 'i' e a non misclassificarle come tagli errati di altre lettere, generando molti falsi negativi come avveniva prima del riaddestramento.
+Il secondo esempio riporta un buon taglio di 'a', ma in una forma sconosciuta alle reti perché non presente nel dataset. Si tratta di una 'a' nel cui taglio troviamo un tratto orizzontale derivante da una 't' precedente o successiva. In questo caso, le pipeline 1 classifica correttamente la lettera 'a' al 90%, mentre la pipeline 3 classifica il taglio come corretto per la 'a' ma classifica la lettera come 'e'. Le pipeline 2 e 4 classificano invece il taglio come errato, che è molto più facile da correggere attraverso l'uso di un language model a posteriori, rispetto ad un carattere classificato per un altro (i.e. 'e' in luogo di 'a').
+Esempi del genere non sono attualmente presenti nel dataset, per cui il comportamento anomalo non stupisce: situazioni simili, come quelle che occorrono anche per le legature, saranno risolte ampliando il dataset con questo tipo di esempi.
 
-Quanto apprendiamo da questo esperimento non è altro che una conferma a quanto già riportato prima: la pipeline 2 si rivela essere la più efficace e efficiente, in quanto i tempi di esecuzione sono gli stessi riportati nell'esperimento precedente. Le pipeline 1 e 3 sono soggette a molti falsi positivi e classificano quasi sempre allo stesso modo, sebben la pipeline 3 abbia un miglior ranking. Le pipeline 2 e 4 sono entrambe molto più robuste ai falsi positivi, tuttavia cedono sporadicamente ad alcuni falsi negativi. Questi piccoli errori possono essere corretti utilizzando una seconda rete serie (la pipeline 3), oppure affidandosi al language model costruito appositamente per questo progetto.
+Quanto apprendiamo da questo esperimento non è altro che una conferma a quanto già riportato prima: la pipeline 2 si rivela essere la più efficace e efficiente, in quanto i tempi di esecuzione sono gli stessi riportati nell'esperimento precedente. Le pipeline 1 e 3 sono soggette a molti falsi positivi e classificano quasi sempre allo stesso modo, sebbene la pipeline 3 abbia un miglior ranking. Le pipeline 2 e 4 sono entrambe molto più robuste ai falsi positivi, tuttavia cedono sporadicamente ad alcuni falsi negativi. Questi piccoli errori possono essere corretti utilizzando una seconda rete serie (la pipeline 3), oppure affidandosi al language model costruito appositamente per questo progetto.
 
 ## Librerie
 Sono state fornite tutte le funzionalità dei notebook in una libreria che permette training, loading, evaluation e prediction.
