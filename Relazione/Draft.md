@@ -171,14 +171,14 @@ Di seguito riportiamo i tassi d'errore relativi solo alle lettere problematiche:
 
 Carattere | Ratio pos:neg 1:1 | Ratio pos:neg 1:2 | Esito
 :--------:|:-----------------:|:-----------------:|:----:
-     i    |       17,5%       |       17,5%       | =
-     m    |        9,9%       |       10.3%       | +
-     n    |       12,3%       |       12.9%       | +
-     u    |         16%       |       15.8%       | -
+     i    |       17,9%       |       17,5%       | -
+     m    |        9,4%       |       10.3%       | +
+     n    |       11,2%       |       12.9%       | +
+     u    |       15,5%       |       15.8%       | +
 s_mediana |        3.3%       |        6.6%       | +
-     h    |      22,22%       |       13.8%       | -
+     h    |       19,4%       |       13.8%       | -
      f    |          5%       |        7.5%       | +
-**media** |      **7.5%**     |      **7.1%**     | -
+**media** |      **7.2%**     |      **7.1%**     | -
 
 Tutte le altre lettere hanno errori inferiori al 5%.
      
