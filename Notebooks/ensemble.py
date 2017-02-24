@@ -2,7 +2,7 @@ from keras.datasets import mnist
 from ocr_cnn import OCR_NeuralNetwork
 from keras.models import Sequential
 from keras.layers import Merge
-from preprocessing import preprocess_data
+import keras_image_utils as kiu
 import numpy as np
 
 class ensemble:
@@ -69,16 +69,12 @@ class ensemble:
 			print("You must train the net first")
 			return
 
-		X_test, _ , _ = preprocess_data(X_test, [], self._models[0]._nb_classes,
-								img_rows=self._models[0]._img_rows, img_cols=self._models[0]._img_cols, 
-								verbose=verbose)
-		return self._ensemble.predict_classes([np.asarray(X_test)] * len(self._models))
+		X_test, _ = kiu.adjust_input(X_test)
+		return self._ensemble.predict_classes([np.asarray(X_test)] * len(self._models))[0]
 
 	def evaluate(self, X_test, y_test, verbose=0):
 
-		X_test, y_test, _ = preprocess_data(X_test, y_test, self._models[0]._nb_classes,
-								img_rows=self._models[0]._img_rows, img_cols=self._models[0]._img_cols, 
-								verbose=verbose)
+		X_test, y_test, _ = kiu.adjust_input_output(X_test, y_test, self._models[0]._nb_classes)
 
 		print('Evaluating ensemble')
 
