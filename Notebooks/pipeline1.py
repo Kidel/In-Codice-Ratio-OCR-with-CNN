@@ -13,13 +13,7 @@ class pipeline1:
 		# Contains each binary models per letter
 		self._models = {}
 		self._classes = classes
-		for letter in classes:
-			path_letter = os.path.join(path, letter)
-			
-			if not os.path.exists(path):
-				os.makedirs(path)
-
-			self._models[letter] = binary_nets[letter]
+		self._models = binary_nets
 
 			#ocr_cnn_ensamble_builder(2, nb_epochs, number_of_nets=number_of_nets, \
 			#	path=path_letter, nb_filters1=nb_filters1, nb_filters2=nb_filters2, dense_layer_size1=dense_layer_size1)
