@@ -208,7 +208,7 @@ def main():
     nn = OCR_NeuralNetwork(10, nb_epochs=2, model_dir="checkpoints", model_name="test", batch_size=128)
 
     # Training
-    history = nn.fit(X_train, y_train, X_test, y_test, forceRetrain=False, window_size=1)
+    history = nn.fit(X_train, y_train, X_test, y_test, forceRetrain=False, window_size=-1)
 
     # Prediciton
     predicted = nn.predict(X_test)
