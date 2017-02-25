@@ -1,11 +1,11 @@
 from keras.datasets import mnist
-from ocr_cnn import OCR_NeuralNetwork
+from cnn import ConvolutionalNeuralNetwork
 from keras.models import Sequential
 from keras.layers import Merge
 import keras_image_utils as kiu
 import numpy as np
 
-class ensamble:
+class ensemble:
 
 	def __init__(self, models=[]):
 		self._models = []
@@ -23,7 +23,7 @@ class ensamble:
 					  metrics=['accuracy', 'precision', 'recall']):
 
 		if len(self._models) < 2:
-			print("You need to at least to add 2 models to build an ensamble")
+			print("You need to at least to add 2 models to build an ensemble")
 			return
 
 		sequentials = []
@@ -31,11 +31,11 @@ class ensamble:
 		for model in self._models:
 			sequentials.append(model._model)
 
-		self._ensamble = Sequential()
+		self._ensemble = Sequential()
 
-		self._ensamble.add(Merge(sequentials, mode='ave'))
+		self._ensemble.add(Merge(sequentials, mode='ave'))
 
-		self._ensamble.compile(loss='categorical_crossentropy',
+		self._ensemble.compile(loss='categorical_crossentropy',
 		                     optimizer='adadelta',
 		                     metrics=['accuracy', 'precision', 'recall'])
 
@@ -67,20 +67,20 @@ class ensamble:
 
 	def predict(self, X_test, verbose=0):
 
-		if not self._ensamble:
+		if not self._ensemble:
 			print("You must train the net first")
 			return
 
 		X_test, _ = kiu.adjust_input(X_test)
-		return self._ensamble.predict([np.asarray(X_test)] * len(self._models))
+		return self._ensemble.predict([np.asarray(X_test)] * len(self._models))
 
 	def evaluate(self, X_test, y_test, verbose=0):
 
 		_, X_test, y_test = kiu.adjust_input_output(X_test, y_test, self._models[0]._nb_classes)
 
-		print('Evaluating ensamble')
+		print('Evaluating ensemble')
 
-		score = self._ensamble.evaluate([np.asarray(X_test)] * len(self._models), 
+		score = self._ensemble.evaluate([np.asarray(X_test)] * len(self._models), 
 			                             y_test, 
 			                             verbose=verbose)
 
@@ -96,35 +96,35 @@ def main():
     (X_train, y_train), (X_test, y_test) = mnist.load_data()
 
     # Initialization
-    nn1 = OCR_NeuralNetwork(10, nb_epochs=2, model_dir="checkpoints", model_name="test1", batch_size=128)
-    nn2 = OCR_NeuralNetwork(10, nb_epochs=2, model_dir="checkpoints", model_name="test2", batch_size=128)
+    nn1 = ConvolutionalNeuralNetwork(10, nb_epochs=2, model_dir="checkpoints", model_name="test1", batch_size=128)
+    nn2 = ConvolutionalNeuralNetwork(10, nb_epochs=2, model_dir="checkpoints", model_name="test2", batch_size=128)
 
     # You can add models in the constructor or by the add_model method
     # as follows
     models = [nn1,nn2]
 
-    nn_ensamble = ensamble(models=models);
+    nn_ensemble = ensemble(models=models);
 
-    nn3 = OCR_NeuralNetwork(10, nb_epochs=4, model_dir="checkpoints", model_name="test3", batch_size=128)
+    nn3 = ConvolutionalNeuralNetwork(10, nb_epochs=4, model_dir="checkpoints", model_name="test3", batch_size=128)
 
-    nn_ensamble.add_model(nn3)
+    nn_ensemble.add_model(nn3)
 
     # Training, not needed now because a snapshot of the model 
     # is present in the folder "checkpoints", if not uncomment this
     # line and refit the model
-    nn_ensamble.fit(X_train, y_train, X_test, y_test, verbose=0)
+    nn_ensemble.fit(X_train, y_train, X_test, y_test, verbose=0)
 
     # Compile the model using the already fit nets. If you are
     # fitting from scracth, then uncomment the line above and
     # comment this line, since the compilation of the model
-    # is done in the fit method of the ensamble
-    #nn_ensamble.compile_model()
+    # is done in the fit method of the ensemble
+    #nn_ensemble.compile_model()
 
     # Prediciton
-    predicted = nn_ensamble.predict(X_test)
+    predicted = nn_ensemble.predict(X_test)
 
     # Evaluation
-    score = nn_ensamble.evaluate(X_test, y_test, verbose=1)
+    score = nn_ensemble.evaluate(X_test, y_test, verbose=1)
 
 
 # Execute the module if it is main

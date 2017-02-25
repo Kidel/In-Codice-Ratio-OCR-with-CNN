@@ -10,7 +10,6 @@ class pipeline3:
 		self._ocr_net = ocr_net
 
 
-
 	def predict(self, X_test, verbose=0):
 
 		prediction_cuts = self._cut_classifier.predict(X_test)
