@@ -6,10 +6,7 @@ import os
 
 class pipeline4:
 
-	def __init__(self, classes=dataset.ALPHABET_ALL, nb_epochs_pip1 = 800, nb_epochs_cut_classifier=800, \
-	 number_of_nets_pip1=5, number_of_nets_cut_classifier=5, batch_size=128, path_cut_classifier="checkpoints/cut_classifier", \
-	 path_pipeline1="checkpoints/pipeline1", nb_filters1_cut=20, nb_filters2_cut=40, \
-	 nb_filters1_pip=20, nb_filters2_pip=40, dense_layer_size1_pip=150, dense_layer_size1_cut=250 ):
+	def __init__(self, cut_classifier, binary_nets, classes=dataset.ALPHABET_ALL ):
 
 		if not os.path.exists(path_cut_classifier):
 		    os.makedirs(path_cut_classifier)
@@ -19,20 +16,16 @@ class pipeline4:
 
 		self._classes = classes
 
-		self._cut_classifier = ocr_cnn_ensamble_builder(2, nb_epochs_cut_classifier, \
-				number_of_nets=number_of_nets_cut_classifier, path=path_cut_classifier,\
-				nb_filters1=nb_filters1_cut, nb_filters2=nb_filters2_cut, dense_layer_size1=dense_layer_size1_cut)
+		self._cut_classifier = cut_classifier
+		#ocr_cnn_ensamble_builder(2, nb_epochs_cut_classifier, \
+		#		number_of_nets=number_of_nets_cut_classifier, path=path_cut_classifier,\
+		#		nb_filters1=nb_filters1_cut, nb_filters2=nb_filters2_cut, dense_layer_size1=dense_layer_size1_cut)
 
-		self._pipeline1 = pipeline1(classes=classes, nb_epochs=nb_epochs_pip1, \
-			number_of_nets=number_of_nets_pip1, batch_size=batch_size, path=path_pipeline1,\
-			nb_filters1=nb_filters1_pip, nb_filters2=nb_filters2_pip, dense_layer_size1=dense_layer_size1_pip)
+		self._pipeline1 = binary_nets
+		#pipeline1(classes=classes, nb_epochs=nb_epochs_pip1, \
+		#	number_of_nets=number_of_nets_pip1, batch_size=batch_size, path=path_pipeline1,\
+		#	nb_filters1=nb_filters1_pip, nb_filters2=nb_filters2_pip, dense_layer_size1=dense_layer_size1_pip)
 
-
-	def fit_letter_pipeline1(self, letter, X_train, y_train, X_test=[], y_test=[], verbose=0):
-		self._pipeline1.fit_letter(letter, X_train, y_train, X_test=X_test, y_test=y_test, verbose=verbose)
-
-	def fit_cut_classifier(self, X_train, y_train, X_test=[], y_test=[], verbose=0):
-		self._cut_classifier.fit(X_train, y_train, X_test=X_test, y_test=y_test, verbose=verbose)
 
 	def predict(self, X_test, verbose=0):
 		prediction_cuts = self._cut_classifier.predict(X_test, verbose=verbose)
@@ -61,22 +54,5 @@ class pipeline4:
 
 		return predictions
 
-
-	# Take in input an array of images, an array of labels, and returns the precision 
-	# of the classifier
-	def evaluate(self, X_test, y_test):
-		prediction = self.predict(X_test)
-
-		score = 0
-		not_a_letter_count = 0
-
-		for i,(is_a_letter,ranking) in enumerate(prediction):
-			if is_a_letter:
-				if ranking[0][0] == self._classes[y_test[i]]:
-					score += 1
-			else:
-				not_a_letter_count += 1
-
-		return score/(len(X_test)-not_a_letter_count)
 
 

@@ -6,10 +6,7 @@ import os
 
 class pipeline2:
 
-	def __init__(self, classes=dataset.ALPHABET_ALL, nb_epochs_ocr = 800, nb_epochs_cut_classifier=800, number_of_nets_ocr=5,\
-	 number_of_nets_cut_classifier=5, batch_size=128, path_ocr="checkpoints/pipeline2", \
-	 path_cut_classifier="checkpoints/cut_classifier", nb_filters1_cut=20, nb_filters2_cut=40, \
-	 nb_filters1_ocr=20, nb_filters2_ocr=40, dense_layer_size1_cut=250, dense_layer_size1_ocr=250 ):
+	def __init__(self, cut_classifier, ocr_classifier, classes=dataset.ALPHABET_ALL ):
 
 		if not os.path.exists(path_ocr):
 		    os.makedirs(path_ocr)
@@ -19,19 +16,16 @@ class pipeline2:
 
 		self._classes = classes
 
-		self._cut_classifier = ocr_cnn_ensamble_builder(2, nb_epochs_cut_classifier, number_of_nets=number_of_nets_cut_classifier,\
-										 path=path_cut_classifier, nb_filters1=nb_filters1_cut, nb_filters2=nb_filters2_cut,\
-										 dense_layer_size1=dense_layer_size1_cut)
+		self._cut_classifier = cut_classifier
+		#ocr_cnn_ensamble_builder(2, nb_epochs_cut_classifier, number_of_nets=number_of_nets_cut_classifier,\
+		#								 path=path_cut_classifier, nb_filters1=nb_filters1_cut, nb_filters2=nb_filters2_cut,\
+		#								 dense_layer_size1=dense_layer_size1_cut)
 
-		self._ocr_net = ocr_cnn_ensamble_builder(len(classes), nb_epochs_ocr, number_of_nets=number_of_nets_ocr, path=path_ocr,\
-			nb_filters1=nb_filters1_ocr, nb_filters2=nb_filters2_ocr, dense_layer_size1=dense_layer_size1_ocr)
+		self._ocr_net = ocr_classifier
+		#ocr_cnn_ensamble_builder(len(classes), nb_epochs_ocr, number_of_nets=number_of_nets_ocr, path=path_ocr,\
+		#	nb_filters1=nb_filters1_ocr, nb_filters2=nb_filters2_ocr, dense_layer_size1=dense_layer_size1_ocr)
 
 
-	def fit_ocr_net(self, X_train, y_train, X_test=[], y_test=[], verbose=0):
-		self._ocr_net.fit(X_train, y_train, X_test=X_test, y_test=y_test, verbose=verbose)
-
-	def fit_cut_classifier(self, X_train, y_train, X_test=[], y_test=[], verbose=0):
-		self._cut_classifier.fit(X_train, y_train, X_test=X_test, y_test=y_test, verbose=verbose)
 
 	# Return a list of tuples where the index i of the list represent the prediction
 	# for the i-th value. Each tuple contains a boolean, True if is a good cut False otherwise,
@@ -66,24 +60,6 @@ class pipeline2:
 				ocr_i += 1
 
 		return prediction
-
-
-	# Take in input an array of images, an array of labels, and returns the precision 
-	# of the classifier
-	def evaluate(self, X_test, y_test):
-		prediction = self.predict(X_test)
-
-		score = 0
-		not_a_letter_count = 0
-
-		for i,(is_a_letter,ranking) in enumerate(prediction):
-			if is_a_letter:
-				if ranking[0][0] == self._classes[y_test[i]]:
-					score += 1
-			else:
-				not_a_letter_count += 1
-
-		return score/(len(X_test)-not_a_letter_count)
 
 
 

@@ -8,9 +8,7 @@ import os
 
 class pipeline1:
 
-	def __init__(self, classes=dataset.ALPHABET_ALL, nb_epochs = 800, number_of_nets=5, \
-		batch_size=128, path="checkpoints/pipeline1", nb_filters1=20, nb_filters2=40,\
-		dense_layer_size1=150):
+	def __init__(self, binary_nets, classes=dataset.ALPHABET_ALL):
 
 		# Contains each binary models per letter
 		self._models = {}
@@ -21,13 +19,12 @@ class pipeline1:
 			if not os.path.exists(path):
 				os.makedirs(path)
 
-			self._models[letter] = ocr_cnn_ensamble_builder(2, nb_epochs, number_of_nets=number_of_nets, \
-				path=path_letter, nb_filters1=nb_filters1, nb_filters2=nb_filters2, dense_layer_size1=dense_layer_size1)
+			self._models[letter] = binary_nets[letter]
+
+			#ocr_cnn_ensamble_builder(2, nb_epochs, number_of_nets=number_of_nets, \
+			#	path=path_letter, nb_filters1=nb_filters1, nb_filters2=nb_filters2, dense_layer_size1=dense_layer_size1)
 
 
-	# We prefer write a fit method per letter in order to avoid loading the entire dataset
-	def fit_letter(self, letter, X_train, y_train, X_test=[], y_test=[], verbose=0):
-		self._models[letter].fit(X_train, y_train, X_test=X_test, y_test=y_test, verbose=verbose)
 
 	# Returns a dictonary containing for each key, the binary classifier represented by that key
 	# es: keu=a, binary classifier = a, not a
@@ -78,22 +75,6 @@ class pipeline1:
 		else:
 			return self.predict_matrix(X_test, verbose=verbose)
 
-	# Take in input an array of images, an array of labels, and returns the precision 
-	# of the classifier
-	def evaluate(self, X_test, y_test):
-		prediction = self.predict(X_test)
-
-		score = 0
-		not_a_letter_count = 0
-
-		for i,(is_a_letter,ranking) in enumerate(prediction):
-			if is_a_letter:
-				if ranking[0][0] == self._classes[y_test[i]]:
-					score += 1
-			else:
-				not_a_letter_count += 1
-
-		return score/(len(X_test)-not_a_letter_count)
 		
 		
 
