@@ -7,6 +7,8 @@ img_rows, img_cols = 34, 56
 
 # adjusts input format for Keras
 def adjust_input(X):
+    X = np.array(X)
+
     if K.image_dim_ordering() == 'th':
         X = X.reshape(X.shape[0], 1, img_rows, img_cols)
         input_shape = (1, img_rows, img_cols)
@@ -20,6 +22,7 @@ def adjust_input(X):
 
 # adjusts input and output format for Keras
 def adjust_input_output(X, y, num_classes=2):
+    y = np.array(y)
     # convert class vectors to binary class matrices
     Y = np_utils.to_categorical(y, num_classes)
     (X, input_shape) = adjust_input(X)

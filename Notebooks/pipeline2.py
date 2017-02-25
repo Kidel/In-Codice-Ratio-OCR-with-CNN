@@ -6,8 +6,10 @@ import os
 
 class pipeline2:
 
-	def __init__(self, classes=dataset.ALPHABET_ALL, nb_epochs_ocr = 800, nb_epochs_cut_classifier=800 number_of_nets=5,\
-	 batch_size=128, path_ocr="checkpoints/pipeline2", path_cut_classifier="checkpoints/cut_classifier"):
+	def __init__(self, classes=dataset.ALPHABET_ALL, nb_epochs_ocr = 800, nb_epochs_cut_classifier=800, number_of_nets_ocr=5,\
+	 number_of_nets_cut_classifier=5, batch_size=128, path_ocr="checkpoints/pipeline2", \
+	 path_cut_classifier="checkpoints/cut_classifier", nb_filters1_cut=20, nb_filters2_cut=40, \
+	 nb_filters1_ocr=20, nb_filters2_ocr=40, dense_layer_size1_cut=250, dense_layer_size1_ocr=250 ):
 
 		if not os.path.exists(path_ocr):
 		    os.makedirs(path_ocr)
@@ -17,8 +19,12 @@ class pipeline2:
 
 		self._classes = classes
 
-		self._cut_classifier = ocr_cnn_ensamble_builder(2, nb_epochs_cut_classifier, number_of_nets=number_of_nets, path=path_cut_classifier)
-		self._ocr_net = ocr_cnn_ensamble_builder(len(classes), nb_epochs_ocr, number_of_nets=number_of_nets, path=path_ocr)
+		self._cut_classifier = ocr_cnn_ensamble_builder(2, nb_epochs_cut_classifier, number_of_nets=number_of_nets_cut_classifier,\
+										 path=path_cut_classifier, nb_filters1=nb_filters1_cut, nb_filters2=nb_filters2_cut,\
+										 dense_layer_size1=dense_layer_size1_cut)
+
+		self._ocr_net = ocr_cnn_ensamble_builder(len(classes), nb_epochs_ocr, number_of_nets=number_of_nets_ocr, path=path_ocr,\
+			nb_filters1=nb_filters1_ocr, nb_filters2=nb_filters2_ocr, dense_layer_size1=dense_layer_size1_ocr)
 
 
 	def fit_ocr_net(self, X_train, y_train, X_test=[], y_test=[], verbose=0):
@@ -48,18 +54,36 @@ class pipeline2:
 
 		ocr_i = 0;
 
-		for i in enumerate(X_test):
+		for i,_ in enumerate(X_test):
 			if not i in index_good_letters:
 				prediction.append((False, []))
 			else:
-				 sorted_indexes = (-prediction_ocr[ocr_i]).argsort()[:3]
-				 ranking = [(self._classes[j], prediction_ocr[ocr_i][j]*100) for j in sorted_indexes]
-				 dt = np.dtype([('letters', np.str_, 16), ('grades', np.float64)])
-				 ranking = np.array(ranking, dtype=dt)
-				 prediction.append((True, ranking))
- 				 ocr_i += 1
+				sorted_indexes = (-prediction_ocr[ocr_i]).argsort()[:3]
+				ranking = [(self._classes[j], prediction_ocr[ocr_i][j]*100) for j in sorted_indexes]
+				dt = np.dtype([('letters', np.str_, 16), ('grades', np.float64)])
+				ranking = np.array(ranking, dtype=dt)
+				prediction.append((True, ranking))
+				ocr_i += 1
 
 		return prediction
+
+
+	# Take in input an array of images, an array of labels, and returns the precision 
+	# of the classifier
+	def evaluate(self, X_test, y_test):
+		prediction = self.predict(X_test)
+
+		score = 0
+		not_a_letter_count = 0
+
+		for i,(is_a_letter,ranking) in enumerate(prediction):
+			if is_a_letter:
+				if ranking[0][0] == self._classes[y_test[i]]:
+					score += 1
+			else:
+				not_a_letter_count += 1
+
+		return score/(len(X_test)-not_a_letter_count)
 
 
 

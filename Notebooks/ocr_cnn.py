@@ -27,12 +27,18 @@ class OCR_NeuralNetwork:
         
         
     def __init__(self, nb_classes, nb_epochs=50, batch_size=128, 
-                 model_dir="checkpoints", model_name="no_name"):
+                 model_dir="checkpoints", model_name="no_name", nb_filters1=20, nb_filters2=40,\
+                 dense_layer_size1=150):
         self._model_name = model_name
         self._batch_size = batch_size
         self._nb_classes = nb_classes
         self._nb_epochs = nb_epochs
         self._model_path = os.path.join(model_dir, model_name + '.hdf5') 
+
+        # Create directory if not exists
+        if not os.path.exists(model_dir):
+                os.makedirs(model_dir)
+
         # input image dimensions
         self._img_rows, self._img_cols = 34, 56
         self._input_shape = (self._img_rows, self._img_cols, 1)
@@ -46,8 +52,8 @@ class OCR_NeuralNetwork:
                         horizontal_flip=False)
         
         # number of convolutional filters to use
-        self._nb_filters1 = 20
-        self._nb_filters2 = 40
+        self._nb_filters1 = nb_filters1
+        self._nb_filters2 = nb_filters2
 
         # size of pooling area for max pooling
         self._pool_size1 = (2, 2)
@@ -58,7 +64,7 @@ class OCR_NeuralNetwork:
         self._kernel_size2 = (5, 5)
 
         # dense layer size
-        self._dense_layer_size1 = 150
+        self._dense_layer_size1 = dense_layer_size1
 
         # dropout rate
         self._dropout = 0.15
@@ -127,8 +133,8 @@ class OCR_NeuralNetwork:
         print("Not pre-processing " + str(window_size) + " epoch(s)")
 
         # Preprocess input
-        X_train,y_train,self._input_shape = kiu.adjust_input_output(X_train, y_train, self._nb_classes)  
-        X_test, y_test, _ = kiu.adjust_input_output(X_test, y_test, self._nb_classes)
+        self._input_shape, X_train,y_train = kiu.adjust_input_output(X_train, y_train, self._nb_classes)  
+        _, X_test, y_test = kiu.adjust_input_output(X_test, y_test, self._nb_classes)
         
         # checkpoint
         checkpoint = ModelCheckpoint(self._model_path, monitor='val_acc', verbose=verbose, save_best_only=True, mode='max')
@@ -165,7 +171,7 @@ class OCR_NeuralNetwork:
             print("Previous Model Not Found")
         
     def evaluate(self, X_test, y_test, verbose = 0):
-        X, y, _ = kiu.adjust_input_output(X_test, y_test, self._nb_classes)
+        _, X, y = kiu.adjust_input_output(X_test, y_test, self._nb_classes)
 
         score = self._model.evaluate(X, y, verbose = verbose)
 
@@ -176,7 +182,7 @@ class OCR_NeuralNetwork:
         
     def predict(self, X_test):
         X_test, _ = kiu.adjust_input_output(X_test)
-        return self._model.predict_classes(X_test)
+        return self._model.predict(X_test)
 
     # Need to fix the range of the axis
     def plot_history(self):

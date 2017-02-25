@@ -9,12 +9,13 @@ class ensamble:
 
 	def __init__(self, models=[]):
 		self._models = []
-		self.add_models(models)
 
-	def add_models(self, models):
 		for model in models:
 			self._models.append(model)
-		self.compile_model()
+
+
+	def add_model(self, model):
+		self._models.append(model)
 
 	def compile_model(self, mode="ave", 
 				      loss="categorical_crossentropy", 
@@ -71,7 +72,7 @@ class ensamble:
 			return
 
 		X_test, _ = kiu.adjust_input(X_test)
-		return self._ensamble.predict_classes([np.asarray(X_test)] * len(self._models))[0]
+		return self._ensamble.predict([np.asarray(X_test)] * len(self._models))
 
 	def evaluate(self, X_test, y_test, verbose=0):
 
@@ -106,7 +107,7 @@ def main():
 
     nn3 = OCR_NeuralNetwork(10, nb_epochs=4, model_dir="checkpoints", model_name="test3", batch_size=128)
 
-    nn_ensamble.add_model([nn3])
+    nn_ensamble.add_model(nn3)
 
     # Training, not needed now because a snapshot of the model 
     # is present in the folder "checkpoints", if not uncomment this
