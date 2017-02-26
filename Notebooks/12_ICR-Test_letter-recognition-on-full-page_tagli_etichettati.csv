@@ -1,0 +1,114 @@
+cut number;ground truth;pipeline1;pipeline2;pipeline3;pipeline4;note
+1541;o;+;+;+;+;
+1542;-;;+;;+;
+1543;-;+;+;+;+;
+1544;-;;+;;+;
+1545;-;;;;;
+1546;-;;;;;
+1547;-;;;;;anche se è identica a una n e la classificano tutte come n, ma in realtà è un pezzo di m
+1548;m;+;+;+;+;
+1549;m;+;+;+;+;anche se il taglio non è pulitissimo
+1550;-;;+;;+;
+1551;-;;;;;anche se è identica a una n e la classificano tutte come n, ma in realtà è un pezzo di m
+1552;-;;;;;
+1553;-;+;+;+;+;
+1554;-;;;;;anche se è identica a una i e la classificano tutte come i, ma in realtà è un pezzo di m
+1555;-;;+;;+;
+1556;-;;;;;
+1557;-;;;;;
+1558;-;;+;;+;
+1559;-;;+;;+;
+1562;-;;+;;+;
+1563;-;;+;;+;
+1564;-;;+;;+;
+1565;-;;+;;+;
+1566;-;;+;;+;
+1567;-;;+;;+;
+1569;S maiuscola;;+;;+;ho considerato s_mediana come errore. Per quanto siano simili, al momento la S maiuscola non fa parte del dataset, inoltre le reti binarie hanno un bias verso la s_mediana, quindi è un caso
+1570;-;;+;;+;
+1571;-;;+;;+;
+1572;-;;+;;+;
+1573;-;;+;;+;
+1574;-;;+;;+;
+1575;-;;+;;+;
+1576;-;;+;;+;
+1577;-;;+;;+;
+1578;d_alta;+;+;+;+;
+1579;-;;;;;anche se è principalmente una d_alta, il taglio non è proprio pulito, considerato errore per tutte e 4
+1580;d_alta;+;+;+;+;
+1581;-;;;;;
+1582;-;;+;;+;
+1583;-;;+;;+;
+1584;-;;;;;
+1585;-;;;;;
+1586;-;;;;;
+1587;u;+;+;+;+;
+1588;-;;;;;taglio  quasi pulito della u precedente, prende solo qualche pixel della lettera successiva e viene quindi classificato da tutti come u
+1589;-;+;+;+;+;
+1590;-;;+;;+;taglio della u che sembra una i
+1591;-;;;;;come sopra ma il taglio è un po' più largo, sembra effettivamente una i legata ad un'altra lettera
+1592;-;;;;;
+1593;-;+;+;+;+;
+1594;-;;+;;+;
+1595;-;;+;;+;
+1596;-;;+;;+;
+1597;-;;+;;+;
+1598;-;;+;;+;
+1599;-;;+;;+;
+1600;s_alta;+;+;+;+;il taglio non è pulitissimo, la 1 e la 4 riconoscono la s, ma danno un ranking più alto alla s_mediana rispetto alla s_alta
+1601;-;;;;;taglio non proprio pulito della s di prima
+1602;s_alta;+;+;+;+;taglio della s_alta ancora più pulito, ora tutte le pipe danno ranking più alto alla s_alta
+1603;-;;;;;
+1604;-;;+;;+;
+1605;-;;+;;+;
+1606;-;;+;;+;
+1607;-;;+;;+;
+1608;-;;+;;+;
+1609;-;;+;;+;
+1610;-;;+;;+;
+1611;-;;+;;+;
+1612;d_mediana;+;+;+;+;
+1613;-;+;+;+;+;
+1614;-;;+;;+;
+1615;-;;;;;
+1616;-;;;;;un pezzo di una d_mediana
+1617;-;;+;;+;
+1618;-;;;;;
+1619;-;;;;;
+1620;-;;+;;+;
+1621;-;;+;;+;
+1622;-;;;;;
+1623;-;;;;;
+1624;-;+;+;+;+;
+1625;-;;;;;
+1626;-;+;+;+;+;
+1627;-;+;+;+;+;
+1628;-;;+;;+;
+1629;-;+;+;+;+;
+1630;e;+;+;+;+;
+1631;-;+;+;+;+;
+1632;-;;+;;+;
+1633;a;+;+;+;+;in tutte le pipeline è la seconda scelta
+1634;-;;+;;+;
+1635;-;;+;;+;
+1636;-;;+;;+;
+1637;-;;+;;+;
+1638;-;;;;;
+1640;-;+;+;+;+;
+1641;-;;+;;+;
+1642;-;;+;;+;
+1643;-;;+;;+;
+1645;-;+;+;+;+;
+1646;-;+;+;+;+;
+1647;-;+;+;+;+;
+1648;-;;+;;+;
+1649;-;;;;;
+;;;;;;
+;;;;;;
+;;;;;;
+;;;;;;
+;;;;;;
+;;;;;;
+Totale;25;77;25;77;;
+Tempo medio: ;;;;;;
+;0.1 s;0.008 s;0.1 s;0.06 s;;
