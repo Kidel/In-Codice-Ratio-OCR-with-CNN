@@ -203,20 +203,22 @@ Di seguito è fornita una tabella che riassume gli esiti dell'esperimento.
 Parola (taglio) | asseras (bad) | asseras (good) | unicu (bad) | unicu (good) | beneficiu (bad) | beneficiu (good) 
 --- | --- | --- | --- | --- | --- | ---
 Pipeline 1 (22bin) | sls-s | asseras           | iuuci | unicu | siiescii | beuesiciu / beneficiu 
-Pipeline 2 (seg+ocr) | ----s | asseras | -uu-- | unicu | ---ef--- | benes-c-u / benef-c-u
+Pipeline 2 (seg+ocr) | ----s | asseras | -uu-- | unicu | ---ef--- | benes-ciu / benef-ciu
 Pipeline 3 (22bin+ocr)| bld-s | asseras | iuuci | unicu | biiefoii | benesiciu / beneficiu 
 Pipeline 4 (seg+22bin)| ----s | asseras | -uu-- | unicu | ---ef--i | beues-ciu / beuef-ciu
 
 La tabella mostra come la seconda pipeline sia la più efficace nel riconoscere i tagli negativi e comunque ottima per i tagli positivi, fatta eccezione di alcuni particolari tagli di 'i', per i quali è già stata individuata la causa dell'anomalia.
 
-Per quanto riguarda i *tempi di esecuzione*, la pipeline 2 risulta essere la più efficiente, impiegando generalmente un ordine di grandezza di meno rispetto alle altre. Di seguito riportiamo i tempi e la media delle esecuzioni:
+Per quanto riguarda i *tempi di esecuzione*, la pipeline 2 risulta essere la più efficiente, impiegando generalmente un ordine di grandezza di meno rispetto alle altre. Di seguito riportiamo i tempi e la media delle esecuzioni (i primi tempi sono stati esclusi per via dell'overhead di caricamento in memoria):
 
 Parola (taglio) | asseras (bad) | asseras (good) | unicu (bad) | unicu (good) | beneficiu (bad) | beneficiu (good) | media
 --- | :---: | :---: | :---: | :---: | :---: | :---: | :---:
-Pipeline 1 (22bin) | 15.9 | 0.63           | 0.48 | 0.47 | 0.74 | 0.86 | 3.1
-Pipeline 2 (seg+ocr) | 1.44 | 0.08 | 0.04 | 0.06 | 0.06 | 0.12 | 0.3
+Pipeline 1 (22bin) | - | 0.63           | 0.48 | 0.47 | 0.74 | 0.86 | 0.6
+Pipeline 2 (seg+ocr) | - | 0.08 | 0.04 | 0.06 | 0.06 | 0.12 | 0.07
 Pipeline 3 (22bin+ocr)| 0.50 | 0.71 | 0.51 | 0.51 | 0.73 | 1.06 | 0.6
 Pipeline 4 (seg+22bin)| 0.13 | 0.64 | 0.20 | 0.46 | 0.30 | 0.81 | 0.4
+
+Sono stati effettuati ulteriori test su tutti i possibili tagli delle 3 parole riportate sopra, più la parola “igitur”. I test hanno confermato i risultati del campione e sono consultabili sulla repository in formato Excel.
 
 ## Test su una pagina di manoscritto
 
