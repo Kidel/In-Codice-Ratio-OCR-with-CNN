@@ -218,7 +218,7 @@ Pipeline 2 (seg+ocr) | - | 0.08 | 0.04 | 0.06 | 0.06 | 0.12 | 0.07
 Pipeline 3 (22bin+ocr)| 0.50 | 0.71 | 0.51 | 0.51 | 0.73 | 1.06 | 0.6
 Pipeline 4 (seg+22bin)| 0.13 | 0.64 | 0.20 | 0.46 | 0.30 | 0.81 | 0.4
 
-Sono stati effettuati ulteriori test su tutti i possibili tagli delle 3 parole riportate sopra, più la parola “igitur”. I test hanno confermato i risultati del campione e sono consultabili sulla repository in formato Excel.
+Sono stati effettuati ulteriori test su tutti i possibili tagli delle 3 parole riportate sopra, più la parola “igitur”. I test hanno confermato i risultati del campione e sono consultabili sul repository in formato Excel. La pipeline 2 individua la parola giusta con pochissime varianti, mentre le pipeline 1 e 3 hanno troppi falsi positivi.
 
 ## Test su una pagina di manoscritto
 
