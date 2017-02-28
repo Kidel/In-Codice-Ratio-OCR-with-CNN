@@ -256,7 +256,6 @@ Tuttavia, includendo fra le etichette anche i tagli errati, la precisione cambia
 La pipeline 2 è inoltre da 10 a 50 volte più veloce delle altre, in grado di elaborare circa 1000 immagini di lettera al secondo. Anche se il numero di pesi da attraversare è all'incirca lo stesso per tutte le pipeline (eccetto per la pipeline 3 che ha un numero di pesi grande circa il doppio), 
 la pipeline 2 presenta meno overhead della 1, dal momento che utilizza solo 2 reti invece di 22, seppur molto più piccole. Inoltre la prima rete, quella segmentatrice, vanifica l'utilizzo della seconda in caso di taglio negativo, mentre nelle pipeline 1 e 3 devono essere sempre eseguite tutte le reti neurali per produrre il ranking e per verificare che almeno una lettera sia quella raffigurata. 
 
-## Librerie
+## Libreria
 Sono state fornite tutte le funzionalità dei notebook in una libreria principale che permette training, loading, evaluation e prediction, oltre che tutte e 4 le pipeline, eseguibili su un batch di tagli. Le funzioni fornite relativamente alle pipeline restituiscono un valore booleano (in caso di taglio corretto o errato) ed un ranking di risultati.
-
 
