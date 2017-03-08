@@ -110,14 +110,17 @@ class ConvolutionalNeuralNetwork:
     #   window_size : Choose the number of epoch with image processing
     #   seed : self explanatory
     def fit(self, X_train, y_train, X_test, y_test, forceRetrain = True, 
-        verbose = 0, initial_epoch = 0, window_size=(-1), seed=1337):
+        verbose = 0, initial_epoch = 0, window_size=(-1), seed=1337, warn=1):
 
         if(forceRetrain):
             ## delete only if file exists ##
             if os.path.exists(self._model_path):
+                if warn == 1:
+                    print("Warning: removing old weights (forceRetrain is True)")
                 os.remove(self._model_path)
             else:
-                print("Older Neural Net could not be found, creating a new net...")
+                if warn == 1:
+                    print("Warning: older Neural Net could not be found, creating a new net...")
 
             self._init_model()
         # If it is not loaded yet, try load it from fs and create a new model
@@ -130,7 +133,8 @@ class ConvolutionalNeuralNetwork:
         if window_size >= self._nb_epochs:
              window_size = self._nb_epochs - 1
 
-        print("Not pre-processing " + str(window_size) + " epoch(s)")
+        if verbose > 0:
+            print("Not pre-processing " + str(window_size) + " epoch(s)")
 
         # Preprocess input
         self._input_shape, X_train,y_train = kiu.adjust_input_output(X_train, y_train, self._nb_classes)  
