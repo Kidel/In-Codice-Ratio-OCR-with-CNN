@@ -4,7 +4,7 @@
 
 **In Codice Ratio** (ICR) is a project curated by **Roma Tre University** in collaboration with **Vatican Secret Archives**. This project has the purpose of digitalizing the contents of documents and ancient texts from the Archive.
 
-The problem we faced in this repository wes just a part of ICR, basically its core. We had to classify handwritten characters in [Carolingian minuscule](https://en.wikipedia.org/wiki/Carolingian_minuscule) starting from an image of that character. The input is an ensemble of possible cuts of the word that has to be read, and our system has to be able to decide if a cut is correct and, if it is, which character it is. 
+The problem we faced in this repository was just a part of ICR, basically its core. We had to classify handwritten characters in [Carolingian minuscule](https://en.wikipedia.org/wiki/Carolingian_minuscule) starting from an image of that character. The input is an ensemble of possible cuts of the word that has to be read, and our system has to be able to decide if a cut is correct and, if it is, which character it is. 
 
 ### Example
 
@@ -19,4 +19,4 @@ The problem we faced in this repository wes just a part of ICR, basically its co
 
 Other parts of ICR include a segmentation software, that is used to find words in a document and provide possible letter cuts to the OCR, and a **Language Model** to discriminate false positives among cuts classified by the OCR. The dataset is provided via a crowdsourcing platform. Those parts are not included in this repository.
 
-The folder "Notebooks" includes our experiments and examples. The folder "Relazione" contains a deatiled relation about what we did. The folder "Libreria" has everything that is needed to use, load or retrain our networks.
+The folder `Notebooks` includes our experiments and examples. The folder `Relazione` contains a detailed relation about what we did. The folder `Libreria` has everything that is needed to use, load or retrain our networks.
